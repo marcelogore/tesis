@@ -24,8 +24,13 @@ public class BoidCanvas extends Canvas {
 		
 		for (Boid boid : boids) {
 			
-			Vector position = boid.getUpdatedPosition();
-			g.drawRect(position.x, position.y, 1, 1);
+			Vector oldPosition = boid.getPositionBeforeUpdate();
+			this.setForeground(Color.WHITE);
+			g.drawRect(oldPosition.x, oldPosition.y, 1, 1);
+			this.setForeground(Color.BLACK);
+			
+			Vector newPosition = boid.getUpdatedPosition();
+			g.drawRect(newPosition.x, newPosition.y, 1, 1);
 		}
 	}
 }
