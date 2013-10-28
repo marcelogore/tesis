@@ -15,6 +15,7 @@ public class BoidCanvas extends Canvas {
 	
 	public BoidCanvas(List<Boid> boids) {
 		this.boids = boids;
+		this.setSize(900, 600);
 		this.setBackground(Color.WHITE);
 		this.setForeground(Color.BLACK);
 	}

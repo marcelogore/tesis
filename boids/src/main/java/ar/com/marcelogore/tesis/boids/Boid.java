@@ -16,6 +16,8 @@ public class Boid {
 	
 	private List<Boid> otherBoids;
 	
+	public Boid() {}
+	
 	public Boid(Vector position, Vector velocity) {
 		this.position = position;
 		this.oldPosition = position;
@@ -76,5 +78,38 @@ public class Boid {
 		distance.subtract(other.getPositionBeforeUpdate());
 		
 		return distance.length();
+	}
+	
+	public static Boid createRandomBoid(int x, int y) {
+		
+		Boid boid = new Boid();
+		
+		boid.position = Vector.createRandomVector(x, y, false);
+		boid.oldPosition = boid.position;
+		
+		
+		
+		boid.velocity = new Vector(randomUnit(), randomUnit());
+		boid.oldVelocity = boid.velocity;
+		
+		return boid;
+	}
+	
+	private static int randomUnit() {
+		
+		return (Math.random() < 0.5) ? -1 : 1;
+	}
+	
+	@Override
+	public String toString() {
+		
+		StringBuilder sb = new StringBuilder("Boid[Position:");
+		
+		sb.append(this.position);
+		sb.append(";Velocity:");
+		sb.append(this.velocity);
+		sb.append("]");
+		
+		return sb.toString();
 	}
 }

@@ -17,13 +17,17 @@ public class Vector {
 		this.y = vector.y;
 	}
 	
-	public void add(Vector... vectors) {
+	public static Vector add(Vector... vectors) {
+		
+		Vector result = new Vector();
 		
 		for (Vector vector : vectors) {
 			
-			this.x += vector.x;
-			this.y += vector.y;
+			result.x += vector.x;
+			result.y += vector.y;
 		}
+		
+		return result;
 	}
 
 	public void subtract(Vector... vectors) {
@@ -55,5 +59,31 @@ public class Vector {
 	public void copy(Vector from) {
 		this.x = from.x;
 		this.y = from.y;
+	}
+	
+	public static Vector createRandomVector(int x, int y, boolean negativeComponents) {
+		
+		Vector vector = new Vector();
+		
+		double randomX = Math.random();
+		double randomY = Math.random();
+		
+		vector.x = (int) (negativeComponents ? ((randomX - 0.5d) * x) : (randomX * x));
+		vector.y = (int) (negativeComponents ? ((randomY - 0.5d) * y) : (randomY * y));
+
+		return vector;
+	}
+	
+	@Override
+	public String toString() {
+		
+		StringBuilder sb = new StringBuilder("(");
+		
+		sb.append(this.x);
+		sb.append(",");
+		sb.append(this.y);
+		sb.append(")");
+		
+		return sb.toString();
 	}
 }

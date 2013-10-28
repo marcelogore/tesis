@@ -12,10 +12,10 @@ public class VectorTest {
 		Vector a = new Vector(2,3);
 		Vector b = new Vector(7,8);
 		
-		a.add(b);
+		Vector c = Vector.add(a, b);
 		
-		assertEquals(9, a.x);
-		assertEquals(11, a.y);
+		assertEquals(9, c.x);
+		assertEquals(11, c.y);
 		
 		assertEquals(7, b.x);
 		assertEquals(8, b.y);

@@ -13,8 +13,8 @@ public class BoidWindow extends JFrame {
 	
 	public BoidWindow(List<Boid> boids) {
 		this.setTitle("Boids");
-		this.setSize(300, 300);
 		this.boidCanvas = new BoidCanvas(boids);
 		this.add(boidCanvas);
+		this.pack();
 	}
 }

@@ -11,28 +11,30 @@ public class BoidRunner {
 
 	public static void main(String[] args) throws Exception {
 		
-		Vector position = new Vector(10,10);
-		Vector velocity = new Vector(0,0);
-		Boid boid = new Boid(position, velocity);
-		
 		List<Boid> boids = new ArrayList<Boid>();
-		boids.add(boid);
+		
+		for (int i = 0; i < 1000; i++) {
+			
+			Boid boid = Boid.createRandomBoid(900, 600);
+			boids.add(boid);
+
+			System.out.println(boid);
+		}
 		
 		BoidWindow window = new BoidWindow(boids);
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		window.setVisible(true);
-		
-		Vector newPosition = new Vector(position);
 
-		for (int i = 0; i < 100; i++) {
+		while (true) {
 			
-			newPosition.x += 1;
-			newPosition.y += 1;
-			
-			boid.setPosition(newPosition);
+			for (Boid boid : boids) {
+				
+				boid.setPosition(Vector.add(boid.getPositionBeforeUpdate(), boid.getVelocityBeforeUpdate()));
+			}
+
 			window.repaint();
-			
-			Thread.sleep(500);
+
+			Thread.sleep(10);
 		}
 	}
 }
