@@ -15,7 +15,7 @@ public class BoidCanvas extends Canvas {
 	
 	public BoidCanvas(List<Boid> boids) {
 		this.boids = boids;
-		this.setSize(900, 600);
+		this.setSize(450, 300);
 		this.setBackground(Color.WHITE);
 		this.setForeground(Color.BLACK);
 	}
@@ -25,12 +25,12 @@ public class BoidCanvas extends Canvas {
 		
 		for (Boid boid : boids) {
 			
-			Vector oldPosition = boid.getPositionBeforeUpdate();
+			Vector oldPosition = boid.getOldPosition();
 			this.setForeground(Color.WHITE);
 			g.drawRect(oldPosition.x, oldPosition.y, 1, 1);
 			this.setForeground(Color.BLACK);
 			
-			Vector newPosition = boid.getUpdatedPosition();
+			Vector newPosition = boid.getPosition();
 			g.drawRect(newPosition.x, newPosition.y, 1, 1);
 		}
 	}

@@ -5,20 +5,25 @@ import java.util.List;
 
 import javax.swing.JFrame;
 
-import ar.com.marcelogore.tesis.boids.util.Vector;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 public class BoidRunner {
 
+	private static final Log log = LogFactory.getLog(BoidRunner.class);
+	
 	public static void main(String[] args) throws Exception {
 		
 		List<Boid> boids = new ArrayList<Boid>();
 		
-		for (int i = 0; i < 1000; i++) {
+		for (int i = 0; i < 10; i++) {
 			
-			Boid boid = Boid.createRandomBoid(900, 600);
+			Boid boid = Boid.createRandomBoid(450, 300);
+			boid.setName("Boid" + i);
 			boids.add(boid);
-
-			System.out.println(boid);
+			boid.setOtherBoids(boids);
+			
+			log.debug("New boid " + boid);
 		}
 		
 		BoidWindow window = new BoidWindow(boids);
@@ -28,13 +33,18 @@ public class BoidRunner {
 		while (true) {
 			
 			for (Boid boid : boids) {
-				
-				boid.setPosition(Vector.add(boid.getPositionBeforeUpdate(), boid.getVelocityBeforeUpdate()));
+
+				update(boid);
 			}
 
 			window.repaint();
 
 			Thread.sleep(10);
 		}
+	}
+	
+	private static void update(Boid boid) {
+		
+		boid.update();
 	}
 }

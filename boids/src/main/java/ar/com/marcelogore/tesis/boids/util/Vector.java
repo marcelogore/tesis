@@ -30,25 +30,30 @@ public class Vector {
 		return result;
 	}
 
-	public void subtract(Vector... vectors) {
+	public static Vector subtract(Vector a, Vector b) {
+
+		Vector result = new Vector();
 		
-		for (Vector vector : vectors) {
-			
-			this.x -= vector.x;
-			this.y -= vector.y;
-		}
+		result.x = a.x - b.x;
+		result.y = a.y - b.y;
+		
+		return result;
 	}
 	
-	public void multiply(double number) {
+	public Vector multiply(double number) {
 		
 		this.x *= number;
 		this.y *= number;
+		
+		return this;
 	}
 
-	public void divide(double number) {
+	public Vector divide(double number) {
 		
 		this.x /= number;
 		this.y /= number;
+		
+		return this;
 	}
 	
 	public double length() {

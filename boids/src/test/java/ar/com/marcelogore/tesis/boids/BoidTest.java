@@ -1,46 +1,24 @@
 package ar.com.marcelogore.tesis.boids;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import ar.com.marcelogore.tesis.boids.util.Vector;
 
 public class BoidTest {
 
-	@Test
-	public void testSetPosition() {
+	@Before
+	public void beforeEachTest() {
 
-		Vector position = new Vector(0,0);
-		Boid boid = new Boid(position, null);
-		
-		assertSame(position, boid.getUpdatedPosition());
-		assertSame(position, boid.getPositionBeforeUpdate());
-		
-		Vector newPosition = new Vector(2,2);
-		boid.setPosition(newPosition);
-		assertSame(position, boid.getPositionBeforeUpdate());
-		assertSame(newPosition, boid.getUpdatedPosition());
+		Boid.setRadius(2.0d);
 	}
-
-	@Test
-	public void testSetVelocity() {
-
-		Vector velocity = new Vector(0,0);
-		Boid boid = new Boid(null, velocity);
-		
-		assertSame(velocity, boid.getUpdatedVelocity());
-		assertSame(velocity, boid.getVelocityBeforeUpdate());
-		
-		Vector newVelocity = new Vector(2,2);
-		boid.setVelocity(newVelocity);
-		assertSame(velocity, boid.getVelocityBeforeUpdate());
-		assertSame(newVelocity, boid.getUpdatedVelocity());
-	}
-
+	
 	@Test
 	public void testGetNearbyBoids1() {
 		

@@ -27,13 +27,10 @@ public class VectorTest {
 		Vector a = new Vector(2,3);
 		Vector b = new Vector(7,8);
 		
-		b.subtract(a);
+		Vector c = Vector.subtract(a, b);
 		
-		assertEquals(2, a.x);
-		assertEquals(3, a.y);
-		
-		assertEquals(5, b.x);
-		assertEquals(5, b.y);
+		assertEquals(-5, c.x);
+		assertEquals(-5, c.y);
 	}
 	
 	@Test
