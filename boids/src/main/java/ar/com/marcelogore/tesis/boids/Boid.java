@@ -12,6 +12,7 @@ public class Boid {
 
 	private static final Log log = LogFactory.getLog(Boid.class);
 	private static double radius = 1000.0d;
+	private static final double MAX_VELOCITY = 10.0d;
 	
 	private String name;
 	
@@ -97,30 +98,45 @@ public class Boid {
 	public void update() {
 		
 		Vector velocityShiftDueToRule1 = this.rule1();
-		log.debug(this.getName() + "'s velocity shift due to rule 1 is " + velocityShiftDueToRule1);
 		Vector velocityShiftDueToRule2 = this.rule2();
-		log.debug(this.getName() + "'s velocity shift due to rule 2 is " + velocityShiftDueToRule2);
 		Vector velocityShiftDueToRule3 = this.rule3();
-		log.debug(this.getName() + "'s velocity shift due to rule 3 is " + velocityShiftDueToRule3);
 
-		this.setVelocity(Vector.add(velocityShiftDueToRule1, velocityShiftDueToRule2, velocityShiftDueToRule3));
+		Vector finalVelocity = this.limitVelocity(Vector.add(velocityShiftDueToRule1, velocityShiftDueToRule2, velocityShiftDueToRule3));
+		
+		if (log.isDebugEnabled()) {
+			
+			log.debug(this.getName() + "'s velocity shift due to rule 1 is " + velocityShiftDueToRule1);
+			log.debug(this.getName() + "'s velocity shift due to rule 2 is " + velocityShiftDueToRule2);
+			log.debug(this.getName() + "'s velocity shift due to rule 3 is " + velocityShiftDueToRule3);
+			log.debug(this.getName() + "'s final velocity is " + finalVelocity);
+		}
+		
+		this.setVelocity(finalVelocity);
 		this.updatePosition();
 	}
 	
+	private Vector limitVelocity(Vector rawVelocity) {
+
+		Vector finalVelocity = new Vector(rawVelocity);
+		
+		double speed = finalVelocity.length();
+		
+		if (speed > MAX_VELOCITY) {
+			finalVelocity = finalVelocity.divide(speed).multiply(MAX_VELOCITY);
+		}
+		
+		return finalVelocity;
+	}
+
 	public static Boid createRandomBoid(int x, int y) {
 		
 		Boid boid = new Boid();
 		
 		boid.position = Vector.createRandomVector(x, y, false);
-		boid.velocity = new Vector(randomUnit(), randomUnit());
+		boid.velocity = new Vector();
 		
 		log.debug("Created new random boid " + boid);
 		return boid;
-	}
-	
-	private static int randomUnit() {
-		
-		return (Math.random() < 0.5) ? -1 : 1;
 	}
 	
 	@Override
@@ -151,9 +167,6 @@ public class Boid {
 		
 		Vector velocityShift = Vector.subtract(centerOfMass, this.getPosition());
 		
-		log.debug("Center of mass for " + this.name + " is " + centerOfMass);
-
-		velocityShift.divide(100);
 		return velocityShift;
 	}
 	
@@ -164,7 +177,7 @@ public class Boid {
 		
 		for (Boid nearbyBoid : nearbyBoids) {
 			
-			if (Vector.subtract(this.getPosition(), nearbyBoid.getPosition()).length() < 10) {
+			if (Vector.subtract(this.getPosition(), nearbyBoid.getPosition()).length() < 50) {
 				
 				collisionAvoidance = Vector.subtract(collisionAvoidance, Vector.subtract(nearbyBoid.getPosition(), this.getPosition()));
 			}
@@ -187,9 +200,6 @@ public class Boid {
 		
 		Vector velocityShift = Vector.subtract(othersVelocity, this.getVelocity());
 		
-		log.debug("Other's velocity is " + othersVelocity);
-
-		velocityShift.divide(8);
 		return velocityShift;
 	}
 	

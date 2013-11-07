@@ -14,11 +14,11 @@ public class VectorTest {
 		
 		Vector c = Vector.add(a, b);
 		
-		assertEquals(9, c.x);
-		assertEquals(11, c.y);
+		assertEquals(9, c.x, 0.001);
+		assertEquals(11, c.y, 0.001);
 		
-		assertEquals(7, b.x);
-		assertEquals(8, b.y);
+		assertEquals(7, b.x, 0.001);
+		assertEquals(8, b.y, 0.001);
 	}
 
 	@Test
@@ -29,8 +29,8 @@ public class VectorTest {
 		
 		Vector c = Vector.subtract(a, b);
 		
-		assertEquals(-5, c.x);
-		assertEquals(-5, c.y);
+		assertEquals(-5, c.x, 0.001);
+		assertEquals(-5, c.y, 0.001);
 	}
 	
 	@Test
@@ -40,8 +40,8 @@ public class VectorTest {
 		
 		a.multiply(10);
 		
-		assertEquals(20, a.x);
-		assertEquals(30, a.y);
+		assertEquals(20, a.x, 0.001);
+		assertEquals(30, a.y, 0.001);
 	}
 
 	@Test
@@ -51,8 +51,8 @@ public class VectorTest {
 		
 		a.divide(2);
 		
-		assertEquals(1, a.x);
-		assertEquals(1, a.y);
+		assertEquals(1, a.x, 0.001);
+		assertEquals(1.5, a.y, 0.001);
 	}
 	
 	@Test
@@ -71,8 +71,8 @@ public class VectorTest {
 		
 		b.copy(a);
 		
-		assertEquals(b.x, a.x);
-		assertEquals(b.y, a.y);
+		assertEquals(b.x, a.x, 0.001);
+		assertEquals(b.y, a.y, 0.001);
 		
 		assertNotSame(a, b);
 	}

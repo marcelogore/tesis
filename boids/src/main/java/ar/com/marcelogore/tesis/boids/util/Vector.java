@@ -2,12 +2,12 @@ package ar.com.marcelogore.tesis.boids.util;
 
 public class Vector {
 	
-	public int x;
-	public int y;
+	public double x;
+	public double y;
 	
 	public Vector() {}
 	
-	public Vector(int x, int y) {
+	public Vector(double x, double y) {
 		this.x = x;
 		this.y = y;
 	}
@@ -66,7 +66,7 @@ public class Vector {
 		this.y = from.y;
 	}
 	
-	public static Vector createRandomVector(int x, int y, boolean negativeComponents) {
+	public static Vector createRandomVector(double x, double y, boolean negativeComponents) {
 		
 		Vector vector = new Vector();
 		
@@ -84,9 +84,9 @@ public class Vector {
 		
 		StringBuilder sb = new StringBuilder("(");
 		
-		sb.append(this.x);
+		sb.append(String.format("%.2f", this.x));
 		sb.append(",");
-		sb.append(this.y);
+		sb.append(String.format("%.2f", this.y));
 		sb.append(")");
 		
 		return sb.toString();

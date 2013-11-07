@@ -39,7 +39,7 @@ public class BoidRunner {
 
 			window.repaint();
 
-			Thread.sleep(10);
+			Thread.sleep(300);
 		}
 	}
 	
