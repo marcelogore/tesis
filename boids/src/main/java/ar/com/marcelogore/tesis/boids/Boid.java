@@ -12,7 +12,7 @@ public class Boid {
 
 	private static final Log log = LogFactory.getLog(Boid.class);
 	private static double radius = 1000.0d;
-	private static final double MAX_VELOCITY = 10.0d;
+	private static final double MAX_VELOCITY = 1.0d;
 	
 	private String name;
 	
@@ -97,9 +97,9 @@ public class Boid {
 	
 	public void update() {
 		
-		Vector velocityShiftDueToRule1 = this.rule1();
-		Vector velocityShiftDueToRule2 = this.rule2();
-		Vector velocityShiftDueToRule3 = this.rule3();
+		Vector velocityShiftDueToRule1 = this.moveTowardsPercievedMassCenter();
+		Vector velocityShiftDueToRule2 = this.keepDistanceFromSurroundingObjects();
+		Vector velocityShiftDueToRule3 = this.matchOtherBoidsVelocity();
 
 		Vector finalVelocity = this.limitVelocity(Vector.add(velocityShiftDueToRule1, velocityShiftDueToRule2, velocityShiftDueToRule3));
 		
@@ -153,7 +153,7 @@ public class Boid {
 		return sb.toString();
 	}
 	
-	private Vector rule1() {
+	private Vector moveTowardsPercievedMassCenter() {
 		
 		Vector centerOfMass = new Vector(0, 0);
 		List<Boid> nearbyBoids = this.getNearbyBoids();
@@ -167,17 +167,17 @@ public class Boid {
 		
 		Vector velocityShift = Vector.subtract(centerOfMass, this.getPosition());
 		
-		return velocityShift;
+		return velocityShift.divide(100);
 	}
 	
-	private Vector rule2() {
+	private Vector keepDistanceFromSurroundingObjects() {
 		
 		Vector collisionAvoidance = new Vector(0,0);
 		List<Boid> nearbyBoids = this.getNearbyBoids();
 		
 		for (Boid nearbyBoid : nearbyBoids) {
 			
-			if (Vector.subtract(this.getPosition(), nearbyBoid.getPosition()).length() < 50) {
+			if (Vector.subtract(this.getPosition(), nearbyBoid.getPosition()).length() < 20) {
 				
 				collisionAvoidance = Vector.subtract(collisionAvoidance, Vector.subtract(nearbyBoid.getPosition(), this.getPosition()));
 			}
@@ -186,7 +186,7 @@ public class Boid {
 		return collisionAvoidance;
 	}
 	
-	private Vector rule3() {
+	private Vector matchOtherBoidsVelocity() {
 		
 		Vector othersVelocity = new Vector(0, 0);
 		List<Boid> nearbyBoids = this.getNearbyBoids();
