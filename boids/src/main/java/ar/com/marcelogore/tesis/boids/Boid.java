@@ -106,9 +106,9 @@ public class Boid {
 	
 	public void update() {
 		
-		Vector velocityShiftDueToRule1 = this.moveTowardsPercievedMassCenter();
-		Vector velocityShiftDueToRule2 = this.keepDistanceFromSurroundingObjects();
-		Vector velocityShiftDueToRule3 = this.matchOtherBoidsVelocity();
+		Vector velocityShiftDueToRule1 = this.moveTowardsPercievedMassCenter().multiply(0.5);
+		Vector velocityShiftDueToRule2 = this.keepDistanceFromSurroundingObjects().multiply(2);
+		Vector velocityShiftDueToRule3 = this.matchOtherBoidsVelocity().multiply(0.5);
 		Vector velocityShiftDueToRule4 = this.moveTowardsGoal();
 
 		Vector finalVelocity = this.limitVelocity(Vector.add(

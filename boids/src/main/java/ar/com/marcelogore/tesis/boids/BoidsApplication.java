@@ -36,7 +36,7 @@ public class BoidsApplication extends Application {
 		
 		for (int i = 0; i < 10; i++) {
 			
-			Boid boid = Boid.createRandomBoid(100, 100);
+			Boid boid = Boid.createRandomBoid(300, 300);
 			boid.setName("Boid" + i);
 			boid.setGoal(goal);
 			
