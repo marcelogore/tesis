@@ -66,6 +66,13 @@ public class Vector {
 		this.y = from.y;
 	}
 	
+	public Vector normalize() {
+		
+		double length = this.length();
+		
+		return length > 0 ? this.divide(length) : this;
+	}
+	
 	public static Vector createRandomVector(double x, double y, boolean negativeComponents) {
 		
 		Vector vector = new Vector();

@@ -19,6 +19,7 @@ public class Boid {
 	private Vector position;
 	private Vector oldPosition;
 	private Vector velocity;
+	private Vector goal;
 	
 	private List<Boid> otherBoids;
 	
@@ -52,6 +53,14 @@ public class Boid {
 
 	private Vector getVelocity() {
 		return velocity;
+	}
+	
+	public Vector getGoal() {
+		return goal;
+	}
+	
+	public void setGoal(Vector goal) {
+		this.goal = goal;
 	}
 	
 	public void setVelocity(Vector velocity) {
@@ -100,14 +109,20 @@ public class Boid {
 		Vector velocityShiftDueToRule1 = this.moveTowardsPercievedMassCenter();
 		Vector velocityShiftDueToRule2 = this.keepDistanceFromSurroundingObjects();
 		Vector velocityShiftDueToRule3 = this.matchOtherBoidsVelocity();
+		Vector velocityShiftDueToRule4 = this.moveTowardsGoal();
 
-		Vector finalVelocity = this.limitVelocity(Vector.add(velocityShiftDueToRule1, velocityShiftDueToRule2, velocityShiftDueToRule3));
+		Vector finalVelocity = this.limitVelocity(Vector.add(
+				velocityShiftDueToRule1, 
+				velocityShiftDueToRule2, 
+				velocityShiftDueToRule3, 
+				velocityShiftDueToRule4));
 		
 		if (log.isDebugEnabled()) {
 			
 			log.debug(this.getName() + "'s velocity shift due to rule 1 is " + velocityShiftDueToRule1);
 			log.debug(this.getName() + "'s velocity shift due to rule 2 is " + velocityShiftDueToRule2);
 			log.debug(this.getName() + "'s velocity shift due to rule 3 is " + velocityShiftDueToRule3);
+			log.debug(this.getName() + "'s velocity shift due to rule 4 is " + velocityShiftDueToRule4);
 			log.debug(this.getName() + "'s final velocity is " + finalVelocity);
 		}
 		
@@ -167,7 +182,7 @@ public class Boid {
 		
 		Vector velocityShift = Vector.subtract(centerOfMass, this.getPosition());
 		
-		return velocityShift.divide(100);
+		return velocityShift.normalize();
 	}
 	
 	private Vector keepDistanceFromSurroundingObjects() {
@@ -183,7 +198,7 @@ public class Boid {
 			}
 		}
 		
-		return collisionAvoidance;
+		return collisionAvoidance.normalize();
 	}
 	
 	private Vector matchOtherBoidsVelocity() {
@@ -200,7 +215,19 @@ public class Boid {
 		
 		Vector velocityShift = Vector.subtract(othersVelocity, this.getVelocity());
 		
-		return velocityShift;
+		return velocityShift.normalize();
+	}
+	
+	private Vector moveTowardsGoal() {
+		
+		Vector goalDirection = new Vector(0,0);
+		
+		if (this.goal != null) {
+			
+			goalDirection = Vector.subtract(this.getGoal(), this.getPosition());
+		}
+		
+		return goalDirection.normalize();
 	}
 	
 }

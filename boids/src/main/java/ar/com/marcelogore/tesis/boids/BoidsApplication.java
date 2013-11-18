@@ -15,6 +15,8 @@ import javafx.stage.Stage;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import ar.com.marcelogore.tesis.boids.util.Vector;
+
 public class BoidsApplication extends Application {
 
 	private static final Log log = LogFactory.getLog(BoidsApplication.class);
@@ -29,10 +31,15 @@ public class BoidsApplication extends Application {
 		List<Boid> boids = new ArrayList<Boid>();
 		final List<CircularBoid> representedBoids = new LinkedList<CircularBoid>();
 		
+		// Vuelen a la esquina contraria
+		final Vector goal = new Vector(1200,800);
+		
 		for (int i = 0; i < 10; i++) {
 			
-			Boid boid = Boid.createRandomBoid(600, 400);
+			Boid boid = Boid.createRandomBoid(100, 100);
 			boid.setName("Boid" + i);
+			boid.setGoal(goal);
+			
 			boids.add(boid);
 			boid.setOtherBoids(boids);
 
@@ -41,7 +48,7 @@ public class BoidsApplication extends Application {
 		}
 
 		final Group group = new Group(representedBoids.toArray(new Circle[0]));
-		final Scene scene = new Scene(group, 600, 400, Color.WHITE);
+		final Scene scene = new Scene(group, 1200, 800, Color.WHITE);
 
 		AnimationTimer timer = new AnimationTimer() {
 			

@@ -76,4 +76,31 @@ public class VectorTest {
 		
 		assertNotSame(a, b);
 	}
+	
+	@Test
+	public void testNormalizeNonZeroVector() {
+		
+		Vector vector = new Vector(35,18);
+		vector = vector.normalize();
+		
+		assertEquals(1, vector.length(), 0.0001);
+	}
+
+	@Test
+	public void testNormalizeNonZeroVector2() {
+		
+		Vector vector = new Vector(-35,18);
+		vector = vector.normalize();
+		
+		assertEquals(1, vector.length(), 0.0001);
+	}
+
+	@Test
+	public void testNormalizeZeroVector() {
+		
+		Vector vector = new Vector(0,0);
+		vector = vector.normalize();
+		
+		assertEquals(0, vector.length(), 0.0001);
+	}
 }
