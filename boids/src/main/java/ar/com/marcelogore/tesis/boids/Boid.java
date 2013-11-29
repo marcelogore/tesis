@@ -11,8 +11,8 @@ import ar.com.marcelogore.tesis.boids.util.Vector;
 public class Boid {
 
 	private static final Log log = LogFactory.getLog(Boid.class);
-	private static double radius = 1000.0d;
-	private static final double MAX_VELOCITY = 1.0d;
+	private static double radius = 50.0d;
+	private static final double MAX_VELOCITY = 10.0d;
 	
 	private String name;
 	
@@ -107,8 +107,8 @@ public class Boid {
 	public void update() {
 		
 		Vector velocityShiftDueToRule1 = this.moveTowardsPercievedMassCenter().multiply(0.5);
-		Vector velocityShiftDueToRule2 = this.keepDistanceFromSurroundingObjects().multiply(2);
-		Vector velocityShiftDueToRule3 = this.matchOtherBoidsVelocity().multiply(0.5);
+		Vector velocityShiftDueToRule2 = this.keepDistanceFromSurroundingObjects();
+		Vector velocityShiftDueToRule3 = this.matchOtherBoidsVelocity();
 		Vector velocityShiftDueToRule4 = this.moveTowardsGoal();
 
 		Vector finalVelocity = this.limitVelocity(Vector.add(
@@ -187,18 +187,30 @@ public class Boid {
 	
 	private Vector keepDistanceFromSurroundingObjects() {
 		
+		final double power = 2;
+		
 		Vector collisionAvoidance = new Vector(0,0);
 		List<Boid> nearbyBoids = this.getNearbyBoids();
 		
 		for (Boid nearbyBoid : nearbyBoids) {
 			
-			if (Vector.subtract(this.getPosition(), nearbyBoid.getPosition()).length() < 20) {
+			Vector distanceVector = Vector.subtract(nearbyBoid.getPosition(), this.getPosition());
+			double distance = distanceVector.length();
+			
+			double distanceCorrection = 0;
+					
+			if (distance <= 25) {
 				
-				collisionAvoidance = Vector.subtract(collisionAvoidance, Vector.subtract(nearbyBoid.getPosition(), this.getPosition()));
+				distanceCorrection = Math.pow((distance - 25) / 12.0, power);
 			}
+			
+			log.debug("Distance: " + distance);
+			log.debug("Correction: " + distanceCorrection);
+			
+			collisionAvoidance = Vector.subtract(collisionAvoidance, distanceVector.normalize().multiply(distanceCorrection));
 		}
 		
-		return collisionAvoidance.normalize();
+		return collisionAvoidance;
 	}
 	
 	private Vector matchOtherBoidsVelocity() {
