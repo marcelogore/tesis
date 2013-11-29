@@ -34,7 +34,7 @@ public class BoidsApplication extends Application {
 		// Vuelen a la esquina contraria
 		final Vector goal = new Vector(1200,800);
 		
-		for (int i = 0; i < 10; i++) {
+		for (int i = 0; i < 50; i++) {
 			
 			Boid boid = Boid.createRandomBoid(300, 300);
 			boid.setName("Boid" + i);
