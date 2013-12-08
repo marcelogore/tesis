@@ -11,8 +11,12 @@ import ar.com.marcelogore.tesis.boids.util.Vector;
 public class Boid {
 
 	private static final Log log = LogFactory.getLog(Boid.class);
-	private static double radius = 50.0d;
+	private static double radius = 80.0d;
 	private static final double MAX_VELOCITY = 10.0d;
+	// Half the actual angle, as measured from the velocity vector direction (0 < angle < PI)
+//	private static final double VIEW_ANGLE = Math.PI * 2.0 / 3.0;
+	private static final double VIEW_ANGLE = Math.PI;
+	private static final double VIEW_COSINE = Math.cos(VIEW_ANGLE);
 	
 	private String name;
 	
@@ -77,9 +81,27 @@ public class Boid {
 		
 		for (Boid boid : this.otherBoids) {
 			
-			if (!this.equals(boid) && this.distance(boid) < radius) {
+			double distance = this.distance(boid);
+			
+			if (!this.equals(boid) && distance < radius) {
 				
-				nearbyBoids.add(boid);
+				if (this.isStationary()) {
+
+					nearbyBoids.add(boid);
+					
+				} else {
+					
+					Vector velocityVector = this.getVelocity();
+					Vector distanceVector = Vector.subtract(boid.getPosition(), this.getPosition());
+					
+					double cosine = ((distanceVector.x * velocityVector.x) + (distanceVector.y * velocityVector.y)) / 
+							(distanceVector.length() * velocityVector.length());
+					
+					if (cosine >= VIEW_COSINE && cosine <= 1) {
+						
+						nearbyBoids.add(boid);
+					}
+				}
 			}
 		}
 		
@@ -88,6 +110,10 @@ public class Boid {
 	
 	public static void setRadius(double otherBoidsRadius) {
 		radius = otherBoidsRadius;
+	}
+	
+	private boolean isStationary() {
+		return (this.velocity.x == 0.0) && (this.velocity.y == 0.0);
 	}
 	
 	public double distance(Boid other) {
@@ -173,13 +199,17 @@ public class Boid {
 		Vector centerOfMass = new Vector(0, 0);
 		List<Boid> nearbyBoids = this.getNearbyBoids();
 		
-		for (Boid nearbyBoid : nearbyBoids) {
+		if (nearbyBoids.size() > 0) {
 			
-			centerOfMass = Vector.add(centerOfMass, nearbyBoid.getPosition());
+			for (Boid nearbyBoid : nearbyBoids) {
+				
+				centerOfMass = Vector.add(centerOfMass, nearbyBoid.getPosition());
+			}
+			
+			centerOfMass.divide(nearbyBoids.size());
+			
 		}
-		
-		centerOfMass.divide(nearbyBoids.size());
-		
+
 		Vector velocityShift = Vector.subtract(centerOfMass, this.getPosition());
 		
 		return velocityShift.normalize();
@@ -204,9 +234,6 @@ public class Boid {
 				distanceCorrection = Math.pow((distance - 25) / 12.0, power);
 			}
 			
-			log.debug("Distance: " + distance);
-			log.debug("Correction: " + distanceCorrection);
-			
 			collisionAvoidance = Vector.subtract(collisionAvoidance, distanceVector.normalize().multiply(distanceCorrection));
 		}
 		
@@ -218,12 +245,15 @@ public class Boid {
 		Vector othersVelocity = new Vector(0, 0);
 		List<Boid> nearbyBoids = this.getNearbyBoids();
 		
-		for (Boid nearbyBoid : nearbyBoids) {
+		if (nearbyBoids.size() > 0) {
 			
-			othersVelocity = Vector.add(othersVelocity, nearbyBoid.getVelocity());
+			for (Boid nearbyBoid : nearbyBoids) {
+				
+				othersVelocity = Vector.add(othersVelocity, nearbyBoid.getVelocity());
+			}
+			
+			othersVelocity.divide(nearbyBoids.size());
 		}
-		
-		othersVelocity.divide(nearbyBoids.size());
 		
 		Vector velocityShift = Vector.subtract(othersVelocity, this.getVelocity());
 		
