@@ -15,6 +15,7 @@ import javafx.stage.Stage;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import ar.com.marcelogore.tesis.boids.util.ScenaryCreator;
 import ar.com.marcelogore.tesis.boids.util.Vector;
 
 public class BoidsApplication extends Application {
@@ -47,6 +48,13 @@ public class BoidsApplication extends Application {
 			log.debug("New boid " + boid);
 		}
 
+		List<CircularBoid> obstacles = new LinkedList<CircularBoid>();
+		ScenaryCreator.drawLine(obstacles, new Vector(550,350), new Vector(650,450));
+		representedBoids.addAll(obstacles);
+		for (CircularBoid cBoid : obstacles) {
+			boids.add(cBoid.getBoid());
+		}
+		
 		final Group group = new Group(representedBoids.toArray(new Circle[0]));
 		final Scene scene = new Scene(group, 1200, 800, Color.WHITE);
 
@@ -61,7 +69,7 @@ public class BoidsApplication extends Application {
 				}
 			}
 		};
-		
+
 		timer.start();
 		
 		stage.setScene(scene);

@@ -19,6 +19,10 @@ public class CircularBoid extends Circle {
 		super(boid.getPosition().x, boid.getPosition().y, SIZE, color);
 		this.boid = boid;
 	}
+	
+	public Boid getBoid() {
+		return boid;
+	}
 
 	public void update() {
 		
@@ -37,5 +41,10 @@ public class CircularBoid extends Circle {
 		int blue = random.nextInt(256);
 		
 		return Color.rgb(red, green, blue);
+	}
+	
+	@Override
+	public String toString() {
+		return boid.toString();
 	}
 }
