@@ -8,7 +8,7 @@ import ar.com.marcelogore.tesis.boids.CircularBoid;
 
 public class ScenaryCreator {
 
-	public static final double DISTANCE_BETWEEN_BOIDS = 5.0;
+	public static final double DISTANCE_BETWEEN_BOIDS = 10.0;
 	
 	public static List<CircularBoid> drawLine(List<CircularBoid> boids, Vector start, Vector end) {
 		
