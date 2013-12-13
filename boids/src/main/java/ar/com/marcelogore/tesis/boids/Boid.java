@@ -19,6 +19,7 @@ public class Boid {
 	private static final double VIEW_COSINE = Math.cos(VIEW_ANGLE);
 	
 	private String name;
+	private boolean obstacle;
 	
 	private Vector position;
 	private Vector oldPosition;
@@ -27,8 +28,14 @@ public class Boid {
 	
 	private List<Boid> otherBoids;
 	
+	
 	public Boid() {
 		this.name = "Boid";
+	}
+
+	public Boid(Vector position, boolean obstacle) {
+		this(position, new Vector(0,0));
+		this.obstacle = obstacle;
 	}
 	
 	public Boid(Vector position, Vector velocity) {
@@ -45,6 +52,10 @@ public class Boid {
 	
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	public boolean isObstacle() {
+		return obstacle;
 	}
 	
 	public Vector getPosition() {
@@ -132,28 +143,31 @@ public class Boid {
 	
 	public void update() {
 		
-		Vector velocityShiftDueToRule1 = this.moveTowardsPercievedMassCenter().multiply(0.5);
-		Vector velocityShiftDueToRule2 = this.keepDistanceFromSurroundingObjects();
-		Vector velocityShiftDueToRule3 = this.matchOtherBoidsVelocity();
-		Vector velocityShiftDueToRule4 = this.moveTowardsGoal();
-
-		Vector finalVelocity = this.limitVelocity(Vector.add(
-				velocityShiftDueToRule1, 
-				velocityShiftDueToRule2, 
-				velocityShiftDueToRule3, 
-				velocityShiftDueToRule4));
-		
-		if (log.isDebugEnabled()) {
+		if (!obstacle) {
 			
-			log.debug(this.getName() + "'s velocity shift due to rule 1 is " + velocityShiftDueToRule1);
-			log.debug(this.getName() + "'s velocity shift due to rule 2 is " + velocityShiftDueToRule2);
-			log.debug(this.getName() + "'s velocity shift due to rule 3 is " + velocityShiftDueToRule3);
-			log.debug(this.getName() + "'s velocity shift due to rule 4 is " + velocityShiftDueToRule4);
-			log.debug(this.getName() + "'s final velocity is " + finalVelocity);
+			Vector velocityShiftDueToRule1 = this.moveTowardsPercievedMassCenter().multiply(0.5);
+			Vector velocityShiftDueToRule2 = this.keepDistanceFromSurroundingObjects();
+			Vector velocityShiftDueToRule3 = this.matchOtherBoidsVelocity();
+			Vector velocityShiftDueToRule4 = this.moveTowardsGoal();
+			
+			Vector finalVelocity = this.limitVelocity(Vector.add(
+					velocityShiftDueToRule1, 
+					velocityShiftDueToRule2, 
+					velocityShiftDueToRule3, 
+					velocityShiftDueToRule4));
+			
+			if (log.isDebugEnabled()) {
+				
+				log.debug(this.getName() + "'s velocity shift due to rule 1 is " + velocityShiftDueToRule1);
+				log.debug(this.getName() + "'s velocity shift due to rule 2 is " + velocityShiftDueToRule2);
+				log.debug(this.getName() + "'s velocity shift due to rule 3 is " + velocityShiftDueToRule3);
+				log.debug(this.getName() + "'s velocity shift due to rule 4 is " + velocityShiftDueToRule4);
+				log.debug(this.getName() + "'s final velocity is " + finalVelocity);
+			}
+			
+			this.setVelocity(finalVelocity);
+			this.updatePosition();
 		}
-		
-		this.setVelocity(finalVelocity);
-		this.updatePosition();
 	}
 	
 	private Vector limitVelocity(Vector rawVelocity) {
