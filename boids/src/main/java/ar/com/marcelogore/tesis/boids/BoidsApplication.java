@@ -8,8 +8,8 @@ import javafx.stage.Stage;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import ar.com.marcelogore.tesis.boids.scenes.FunnelScenario;
 import ar.com.marcelogore.tesis.boids.scenes.Scenario;
-import ar.com.marcelogore.tesis.boids.scenes.SimpleObstacleScenario;
 
 public class BoidsApplication extends Application {
 
@@ -22,7 +22,8 @@ public class BoidsApplication extends Application {
 	@Override
 	public void start(Stage stage) throws Exception {
 
-		final Scenario scenario =  new SimpleObstacleScenario();
+//		final Scenario scenario =  new SimpleObstacleScenario();
+		final Scenario scenario =  new FunnelScenario();
 		final Scene scene = scenario.createScene();
 
 		AnimationTimer timer = new AnimationTimer() {
