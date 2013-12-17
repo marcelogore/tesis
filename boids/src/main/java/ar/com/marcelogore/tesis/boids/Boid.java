@@ -263,7 +263,11 @@ public class Boid {
 			
 			for (Boid nearbyBoid : nearbyBoids) {
 				
-				othersVelocity = Vector.add(othersVelocity, nearbyBoid.getVelocity());
+				// Ignores obstacle Boids velocity
+				if (!nearbyBoid.isObstacle()) {
+					
+					othersVelocity = Vector.add(othersVelocity, nearbyBoid.getVelocity());
+				}
 			}
 			
 			othersVelocity.divide(nearbyBoids.size());
