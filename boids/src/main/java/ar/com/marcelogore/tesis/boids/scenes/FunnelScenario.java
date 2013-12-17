@@ -29,7 +29,7 @@ public class FunnelScenario extends Scenario {
 		// Vuelen a la esquina contraria
 		final Vector goal = new Vector(1200,800);
 		
-		for (int i = 0; i < 50; i++) {
+		for (int i = 0; i < 100; i++) {
 			
 			Boid boid = Boid.createRandomBoid(300, 300);
 			boid.setName("Boid" + i);
@@ -46,6 +46,7 @@ public class FunnelScenario extends Scenario {
 		ScenaryCreator.drawLine(obstacles, new Vector(580,350), new Vector(1200,780));
 		ScenaryCreator.drawLine(obstacles, new Vector(520,400), new Vector(1180,800));
 		ScenaryCreator.drawLine(obstacles, new Vector(0,400), new Vector(520,400));
+		ScenaryCreator.drawLine(obstacles, new Vector(400,0), new Vector(580,350));
 		
 		representedBoids.addAll(obstacles);
 		for (CircularBoid cBoid : obstacles) {
