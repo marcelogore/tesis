@@ -98,4 +98,27 @@ public class Vector {
 		
 		return sb.toString();
 	}
+	
+	@Override
+	public boolean equals(Object other) {
+		
+		boolean equals = false;
+		
+		if (other != null) {
+			
+			if (this == other) {
+				
+				equals = true;
+			
+			} else {
+				
+				if (this.getClass().equals(other.getClass())) {
+					
+					equals = this.x == ((Vector)other).x && this.y == ((Vector)other).y;
+				}
+			}
+		}
+		
+		return equals;
+	}
 }
