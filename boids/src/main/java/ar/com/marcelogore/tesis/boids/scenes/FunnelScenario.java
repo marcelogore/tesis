@@ -27,7 +27,7 @@ public class FunnelScenario extends Scenario {
 		List<Boid> boids = new ArrayList<Boid>();
 		
 		// Vuelen a la esquina contraria
-		final Vector goal = new Vector(1200,800);
+		final Vector goal = new Vector(this.getSceneSize());
 		
 		for (int i = 0; i < 100; i++) {
 			
@@ -55,7 +55,11 @@ public class FunnelScenario extends Scenario {
 		
 		final Group group = new Group(representedBoids.toArray(new Circle[0]));
 
-		return new Scene(group, 1200, 800, Color.WHITE);
+		return new Scene(group, getSceneSize().x, getSceneSize().y, Color.WHITE);
 	}
 
+	@Override
+	public Vector getSceneSize() {
+		return new Vector(1200,800);
+	}
 }

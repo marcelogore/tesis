@@ -41,6 +41,9 @@ public class IntersectionScenario extends Scenario {
 				boids.add(boid);
 				boid.setOtherBoids(boids);
 				
+				boid.setMaxX((int) getSceneSize().x);
+				boid.setMaxY((int) getSceneSize().y);
+				
 				representedBoids.add(new CircularBoid(boid, Color.RED));
 				log.debug("New boid " + boid);
 			}
@@ -58,6 +61,9 @@ public class IntersectionScenario extends Scenario {
 				boids.add(boid);
 				boid.setOtherBoids(boids);
 				
+				boid.setMaxX((int) getSceneSize().x);
+				boid.setMaxY((int) getSceneSize().y);
+
 				representedBoids.add(new CircularBoid(boid, Color.BLUE));
 				log.debug("New boid " + boid);
 			}
@@ -83,7 +89,7 @@ public class IntersectionScenario extends Scenario {
 		
 		final Group group = new Group(representedBoids.toArray(new Circle[0]));
 
-		return new Scene(group, 800, 800, Color.WHITE);
+		return new Scene(group, getSceneSize().x, getSceneSize().y, Color.WHITE);
 
 	}
 

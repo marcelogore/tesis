@@ -3,8 +3,9 @@ package ar.com.marcelogore.tesis.boids.scenes;
 import java.util.LinkedList;
 import java.util.List;
 
-import ar.com.marcelogore.tesis.boids.CircularBoid;
 import javafx.scene.Scene;
+import ar.com.marcelogore.tesis.boids.CircularBoid;
+import ar.com.marcelogore.tesis.boids.util.Vector;
 
 public abstract class Scenario {
 
@@ -14,5 +15,9 @@ public abstract class Scenario {
 	
 	public List<CircularBoid> getRepresentedBoids() {
 		return representedBoids;
+	}
+	
+	public Vector getSceneSize() {
+		return new Vector(800,800);
 	}
 }
