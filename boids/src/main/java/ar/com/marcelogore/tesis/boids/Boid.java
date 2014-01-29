@@ -28,6 +28,9 @@ public class Boid {
 	
 	private List<Boid> otherBoids;
 	
+	// Leave them in 0 to avoid a closed loop
+	private int maxX;
+	private int maxY;
 	
 	public Boid() {
 		this.name = "Boid";
@@ -86,6 +89,22 @@ public class Boid {
 		this.otherBoids = otherBoids;
 	}
 	
+	public int getMaxX() {
+		return maxX;
+	}
+	
+	public void setMaxX(int x) {
+		this.maxX = x;
+	}
+	
+	public int getMaxY() {
+		return maxY;
+	}
+	
+	public void setMaxY(int y) {
+		this.maxY = y;
+	}
+	
 	public List<Boid> getNearbyBoids() {
 		
 		List<Boid> nearbyBoids = new ArrayList<Boid>();
@@ -95,24 +114,26 @@ public class Boid {
 			double distance = this.distance(boid);
 			
 			if (!this.equals(boid) && distance < radius) {
-				
-				if (this.isStationary()) {
 
-					nearbyBoids.add(boid);
-					
-				} else {
-					
-					Vector velocityVector = this.getVelocity();
-					Vector distanceVector = Vector.subtract(boid.getPosition(), this.getPosition());
-					
-					double cosine = ((distanceVector.x * velocityVector.x) + (distanceVector.y * velocityVector.y)) / 
-							(distanceVector.length() * velocityVector.length());
-					
-					if (cosine >= VIEW_COSINE && cosine <= 1) {
-						
-						nearbyBoids.add(boid);
-					}
-				}
+				nearbyBoids.add(boid);
+				
+//				if (this.isStationary()) {
+//
+//					nearbyBoids.add(boid);
+//					
+//				} else {
+//					
+//					Vector velocityVector = this.getVelocity();
+//					Vector distanceVector = Vector.subtract(boid.getPosition(), this.getPosition());
+//					
+//					double cosine = ((distanceVector.x * velocityVector.x) + (distanceVector.y * velocityVector.y)) / 
+//							(distanceVector.length() * velocityVector.length());
+//					
+//					if (cosine >= VIEW_COSINE && cosine <= 1) {
+//						
+//						nearbyBoids.add(boid);
+//					}
+//				}
 			}
 		}
 		
@@ -138,7 +159,35 @@ public class Boid {
 	private void updatePosition() {
 		
 		this.oldPosition = this.position;
-		this.position = Vector.add(this.position, this.velocity);
+		this.position = this.modulo(Vector.add(this.position, this.velocity));
+	}
+	
+	private Vector modulo(Vector vector) {
+		
+		Vector moduloVector = new Vector(vector);
+
+		if (this.getMaxX() != 0 && this.getMaxY() != 0) {
+			
+			if (vector.x > this.getMaxX()) {
+				
+				moduloVector.x = vector.x - this.getMaxX();
+			}
+			
+			if (vector.x < 0) {
+				moduloVector.x = this.getMaxX() - vector.x;
+			}
+			
+			if (vector.y > this.getMaxY()) {
+				
+				moduloVector.y = vector.y - this.getMaxY();
+			}
+
+			if (vector.y < 0) {
+				moduloVector.y = this.getMaxY() - vector.y;
+			}
+		}
+		
+		return moduloVector;
 	}
 	
 	public void update() {
@@ -148,7 +197,7 @@ public class Boid {
 			Vector velocityShiftDueToRule1 = this.moveTowardsPercievedMassCenter().multiply(0.5);
 			Vector velocityShiftDueToRule2 = this.keepDistanceFromSurroundingObjects();
 			Vector velocityShiftDueToRule3 = this.matchOtherBoidsVelocity();
-			Vector velocityShiftDueToRule4 = this.moveTowardsGoal();
+			Vector velocityShiftDueToRule4 = this.moveTowardsGoal().multiply(2);
 			
 			Vector finalVelocity = this.limitVelocity(Vector.add(
 					velocityShiftDueToRule1, 
@@ -158,10 +207,10 @@ public class Boid {
 			
 			if (log.isDebugEnabled()) {
 				
-				log.debug(this.getName() + "'s velocity shift due to rule 1 is " + velocityShiftDueToRule1);
-				log.debug(this.getName() + "'s velocity shift due to rule 2 is " + velocityShiftDueToRule2);
-				log.debug(this.getName() + "'s velocity shift due to rule 3 is " + velocityShiftDueToRule3);
-				log.debug(this.getName() + "'s velocity shift due to rule 4 is " + velocityShiftDueToRule4);
+				log.debug(this.getName() + "'s velocity shift due to rule 1 (mass center) is " + velocityShiftDueToRule1);
+				log.debug(this.getName() + "'s velocity shift due to rule 2 (distance to others) is " + velocityShiftDueToRule2);
+				log.debug(this.getName() + "'s velocity shift due to rule 3 (match velocity) is " + velocityShiftDueToRule3);
+				log.debug(this.getName() + "'s velocity shift due to rule 4 (goal) is " + velocityShiftDueToRule4);
 				log.debug(this.getName() + "'s final velocity is " + finalVelocity);
 			}
 			
@@ -221,7 +270,6 @@ public class Boid {
 			}
 			
 			centerOfMass.divide(nearbyBoids.size());
-			
 		}
 
 		Vector velocityShift = Vector.subtract(centerOfMass, this.getPosition());
