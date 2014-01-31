@@ -21,6 +21,8 @@ public class BoidsApplication extends Application {
 	@Override
 	public void start(Stage stage) throws Exception {
 
+		log.info("Running Boids");
+		
 //		final Scenario scenario =  new PlainScenario();
 //		final Scenario scenario =  new SimpleObstacleScenario();
 //		final Scenario scenario =  new FunnelScenario();
