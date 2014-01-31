@@ -22,6 +22,8 @@ public class IntersectionCollisionScenario extends Scenario {
 	@Override
 	public Scene createScene() {
 		
+		log.info("Intersection");
+		
 		List<Boid> boids = new ArrayList<Boid>();
 		
 		final Vector goal1 = new Vector(400,200);

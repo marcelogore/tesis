@@ -22,6 +22,8 @@ public class FrontCollisionScenario extends Scenario {
 	@Override
 	public Scene createScene() {
 		
+		log.info("Frontal collision");
+		
 		List<Boid> boids = new ArrayList<Boid>();
 		
 		final Vector goal1 = new Vector(400,201);
@@ -32,6 +34,7 @@ public class FrontCollisionScenario extends Scenario {
 		boid1.setGoal(goal1);
 		boid1.setMaxX((int) this.getSceneSize().x);
 		boid1.setMaxY((int) this.getSceneSize().y);
+		boid1.setViewAngle(Math.PI /2.0);
 		
 
 		Boid boid2 = new Boid(new Vector(400,200), new Vector());
@@ -39,6 +42,7 @@ public class FrontCollisionScenario extends Scenario {
 		boid2.setGoal(goal2);
 		boid2.setMaxX((int) this.getSceneSize().x);
 		boid2.setMaxY((int) this.getSceneSize().y);
+		boid2.setViewAngle(Math.PI /2.0);
 
 		boids.add(boid1);
 		boids.add(boid2);
