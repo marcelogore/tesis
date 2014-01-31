@@ -14,9 +14,10 @@ public class Boid {
 	private static double radius = 80.0d;
 	private static final double MAX_VELOCITY = 10.0d;
 	// Half the actual angle, as measured from the velocity vector direction (0 < angle < PI)
-//	private static final double VIEW_ANGLE = Math.PI * 2.0 / 3.0;
 	private static final double VIEW_ANGLE = Math.PI;
-	private static final double VIEW_COSINE = Math.cos(VIEW_ANGLE);
+	
+	private static final double CENTER_OF_MASS_AFFINITY = 0.5;
+	private static final double GOAL_AFFINITY = CENTER_OF_MASS_AFFINITY * 4;
 	
 	private String name;
 	private boolean obstacle;
@@ -27,6 +28,9 @@ public class Boid {
 	private Vector goal;
 	
 	private List<Boid> otherBoids;
+	
+	private double viewAngle = VIEW_ANGLE;
+	private double viewCosine = Math.cos(viewAngle);
 	
 	// Leave them in 0 to avoid a closed loop
 	private int maxX;
@@ -81,6 +85,11 @@ public class Boid {
 		this.goal = goal;
 	}
 	
+	public void setViewAngle(double viewAngle) {
+		this.viewAngle = viewAngle;
+		this.viewCosine = Math.cos(viewAngle);
+	}
+	
 	public void setVelocity(Vector velocity) {
 		this.velocity = velocity;
 	}
@@ -115,25 +124,23 @@ public class Boid {
 			
 			if (!this.equals(boid) && distance < radius) {
 
-				nearbyBoids.add(boid);
-				
-//				if (this.isStationary()) {
-//
-//					nearbyBoids.add(boid);
-//					
-//				} else {
-//					
-//					Vector velocityVector = this.getVelocity();
-//					Vector distanceVector = Vector.subtract(boid.getPosition(), this.getPosition());
-//					
-//					double cosine = ((distanceVector.x * velocityVector.x) + (distanceVector.y * velocityVector.y)) / 
-//							(distanceVector.length() * velocityVector.length());
-//					
-//					if (cosine >= VIEW_COSINE && cosine <= 1) {
-//						
-//						nearbyBoids.add(boid);
-//					}
-//				}
+				if (this.isStationary()) {
+
+					nearbyBoids.add(boid);
+					
+				} else {
+					
+					Vector velocityVector = this.getVelocity();
+					Vector distanceVector = Vector.subtract(boid.getPosition(), this.getPosition());
+					
+					double cosine = ((distanceVector.x * velocityVector.x) + (distanceVector.y * velocityVector.y)) / 
+							(distanceVector.length() * velocityVector.length());
+					
+					if (cosine >= this.viewCosine && cosine <= 1) {
+						
+						nearbyBoids.add(boid);
+					}
+				}
 			}
 		}
 		
@@ -194,10 +201,10 @@ public class Boid {
 		
 		if (!obstacle) {
 			
-			Vector velocityShiftDueToRule1 = this.moveTowardsPercievedMassCenter().multiply(0.5);
+			Vector velocityShiftDueToRule1 = this.moveTowardsPercievedMassCenter().multiply(CENTER_OF_MASS_AFFINITY);
 			Vector velocityShiftDueToRule2 = this.keepDistanceFromSurroundingObjects();
 			Vector velocityShiftDueToRule3 = this.matchOtherBoidsVelocity();
-			Vector velocityShiftDueToRule4 = this.moveTowardsGoal().multiply(2);
+			Vector velocityShiftDueToRule4 = this.moveTowardsGoal().multiply(GOAL_AFFINITY);
 			
 			Vector finalVelocity = this.limitVelocity(Vector.add(
 					velocityShiftDueToRule1, 
@@ -259,8 +266,9 @@ public class Boid {
 	
 	private Vector moveTowardsPercievedMassCenter() {
 		
-		Vector centerOfMass = new Vector(0, 0);
+		Vector centerOfMass = new Vector(0,0);
 		List<Boid> nearbyBoids = this.getNearbyBoids();
+		Vector velocityShift = new Vector(0,0);
 		
 		if (nearbyBoids.size() > 0) {
 			
@@ -270,10 +278,9 @@ public class Boid {
 			}
 			
 			centerOfMass.divide(nearbyBoids.size());
+			velocityShift = Vector.subtract(centerOfMass, this.getPosition());
 		}
 
-		Vector velocityShift = Vector.subtract(centerOfMass, this.getPosition());
-		
 		return velocityShift.normalize();
 	}
 	
@@ -306,6 +313,7 @@ public class Boid {
 		
 		Vector othersVelocity = new Vector(0, 0);
 		List<Boid> nearbyBoids = this.getNearbyBoids();
+		Vector velocityShift = new Vector(0,0);
 		
 		if (nearbyBoids.size() > 0) {
 			
@@ -319,10 +327,9 @@ public class Boid {
 			}
 			
 			othersVelocity.divide(nearbyBoids.size());
+			velocityShift = Vector.subtract(othersVelocity, this.getVelocity());
 		}
-		
-		Vector velocityShift = Vector.subtract(othersVelocity, this.getVelocity());
-		
+
 		return velocityShift.normalize();
 	}
 	
