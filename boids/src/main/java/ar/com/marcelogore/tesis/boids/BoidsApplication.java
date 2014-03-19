@@ -23,15 +23,16 @@ public class BoidsApplication extends Application {
 
 		log.info("Running Boids");
 		
-//		final Scenario scenario =  new PlainScenario();
-//		final Scenario scenario =  new SimpleObstacleScenario();
-//		final Scenario scenario =  new FunnelScenario();
-//		final Scenario scenario =  new IntersectionScenario();
-//		final Scenario scenario =  new MultipleIntersectionScenario();
-//		final Scenario scenario =  new LaneContractionScenario();
-//		final Scenario scenario =  new IntersectionCollisionScenario();
-		final Scenario scenario =  new FrontCollisionScenario();
-
+		final Scenario scenario = new PlainScenario();
+//		final Scenario scenario = new SimpleObstacleScenario();
+//		final Scenario scenario = new FunnelScenario();
+//		final Scenario scenario = new IntersectionScenario();
+//		final Scenario scenario = new MultipleIntersectionScenario();
+//		final Scenario scenario = new LaneContractionScenario();
+//		final Scenario scenario = new IntersectionCollisionScenario();
+//		final Scenario scenario = new FrontCollisionScenario();
+//		final Scenario scenario = new OneLaneScenario();
+		
 		final Scene scene = scenario.createScene();
 
 		AnimationTimer timer = new AnimationTimer() {
