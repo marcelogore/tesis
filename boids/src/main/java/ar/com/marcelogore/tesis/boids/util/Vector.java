@@ -40,6 +40,11 @@ public class Vector {
 		return result;
 	}
 	
+	public static double scalarProduct(Vector a, Vector b) {
+		
+		return a.x * b.x + a.y * b.y;
+	}
+	
 	public Vector multiply(double number) {
 		
 		this.x *= number;
@@ -59,6 +64,11 @@ public class Vector {
 	public double length() {
 		
 		return Math.sqrt(this.x * this.x + this.y * this.y);
+	}
+	
+	public double distanceTo(Vector other) {
+		
+		return Vector.subtract(this, other).length();
 	}
 	
 	public void copy(Vector from) {
@@ -86,6 +96,19 @@ public class Vector {
 		return vector;
 	}
 	
+	public static Vector createRandomVector(double minX, double minY, double maxX, double maxY) {
+		
+		Vector vector = new Vector();
+		
+		double randomX = Math.random();
+		double randomY = Math.random();
+		
+		vector.x = (int) (minX + randomX * maxX);
+		vector.y = (int) (minY + randomY * maxY);
+
+		return vector;
+	}
+
 	@Override
 	public String toString() {
 		
