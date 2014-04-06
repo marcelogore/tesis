@@ -24,6 +24,10 @@ public class CircularBoid extends Circle {
 		return boid;
 	}
 
+	public void calculateNewVelocity() {
+		this.boid.calculateNewVelocity();
+	}
+	
 	public void update() {
 		
 		this.boid.update();
