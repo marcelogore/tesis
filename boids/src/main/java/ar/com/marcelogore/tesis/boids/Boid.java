@@ -1,6 +1,6 @@
 package ar.com.marcelogore.tesis.boids;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -11,23 +11,22 @@ import ar.com.marcelogore.tesis.boids.util.Vector;
 public class Boid {
 
 	private static final Log log = LogFactory.getLog(Boid.class);
-	private static double radius = 80.0d;
-	private static final double MAX_VELOCITY = 10.0d;
+	private static double radius = 40.0d;
+	private static final double MAX_VELOCITY = 2.0d;
 	// Half the actual angle, as measured from the velocity vector direction (0 < angle < PI)
-	private static final double VIEW_ANGLE = Math.PI;
-	
-	private static final double CENTER_OF_MASS_AFFINITY = 0.5;
-	private static final double GOAL_AFFINITY = CENTER_OF_MASS_AFFINITY * 4;
+	private static final double VIEW_ANGLE = Math.PI / 3;
 	
 	private String name;
 	private boolean obstacle;
 	
-	private Vector position;
-	private Vector oldPosition;
-	private Vector velocity;
-	private Vector goal;
+	private Vector currentPosition;
+	private Vector currentVelocity;
+	private Vector newVelocity;
+	private Vector[] goal;
 	
 	private List<Boid> otherBoids;
+	private List<Boid> nearbyBoids = new LinkedList<Boid>();
+	private List<Boid> nearbyObstacles = new LinkedList<Boid>();
 	
 	private double viewAngle = VIEW_ANGLE;
 	private double viewCosine = Math.cos(viewAngle);
@@ -35,88 +34,183 @@ public class Boid {
 	// Leave them in 0 to avoid a closed loop
 	private int maxX;
 	private int maxY;
+	private boolean debug;
 	
 	public Boid() {
 		this.name = "Boid";
 	}
 
+	/**
+	 * Create a boid indicating its initial position and whether it'll be
+	 * an obstacle. No other parameters are set.
+	 * 
+	 * @param position
+	 * @param obstacle
+	 */
 	public Boid(Vector position, boolean obstacle) {
 		this(position, new Vector(0,0));
 		this.obstacle = obstacle;
 	}
 	
+	/**
+	 * Create a boid, named "Boid", indicating its initial position and velocity. 
+	 * No other parameters are set.
+	 * 
+	 * @param position
+	 * @param velocity
+	 */
 	public Boid(Vector position, Vector velocity) {
 		this.name = "Boid";
-		this.position = position;
-		this.velocity = velocity;
-		
-		log.debug("Created boid " + this);
+		this.currentPosition = position;
+		this.currentVelocity = velocity;
 	}
 	
-	private String getName() {
+	/**
+	 * A name to identify the boid
+	 * 
+	 * @return
+	 */
+	public String getName() {
 		return name;
 	}
-	
 	public void setName(String name) {
 		this.name = name;
 	}
 	
+	/**
+	 * If the boid is an obstacle, it'll be unaccounted for when calculating 
+	 * group speed (rule 3)
+	 * @return
+	 */
 	public boolean isObstacle() {
 		return obstacle;
 	}
 	
+	/**
+	 * The boid's current position
+	 * 
+	 * @return
+	 */
 	public Vector getPosition() {
-		return position;
-	}
-	
-	public Vector getOldPosition() {
-		return oldPosition;
+		return currentPosition;
 	}
 
-	private Vector getVelocity() {
-		return velocity;
+	/**
+	 * The boid's current velocity
+	 * 
+	 * @return
+	 */
+	public Vector getVelocity() {
+		return currentVelocity;
 	}
-	
-	public Vector getGoal() {
+	private void setNewVelocity(Vector velocity) {
+		this.newVelocity = velocity;
+	}
+
+
+	/**
+	 * The boid's goal. A boid without a goal will not move unless other moving
+	 * boids are sufficiently near for it to join them
+	 * 
+	 * @return
+	 */
+	public Vector[] getGoal() {
 		return goal;
 	}
 	
-	public void setGoal(Vector goal) {
-		this.goal = goal;
+	/**
+	 * The goal can be null, a point (a pair of coordinates on an plane) or a 
+	 * segment (a pair of pair-of-coordinates indicating the segment's begin and end). <br>
+	 * A boid without a goal will not move unless other moving boids are 
+	 * sufficiently near for it to join them. <br>
+	 * 
+	 * @param goal
+	 */
+	public void setGoal(Vector... goal) {
+
+		if ((goal.length > 2) || (goal.length == 2 && (goal[0] == null || goal[1] == null))) {
+			
+			throw new IllegalArgumentException("The goal can either be null, a point (one non-null Vector) or a segment (a pair of non-null Vectors)");
+		}
+		
+		if ((goal == null) || (goal.length == 1 && goal[0] == null) || (goal.length == 2 && goal[1] == null)) {
+			
+			this.goal = null;
+		
+		} else {
+			
+			if (this.goal == null) {
+				
+				this.goal = new Vector[2];
+			}
+
+			if (goal[0] != null) {
+				
+				this.goal[0] = goal[0];
+			}
+			
+			if (goal.length == 2) {
+				
+				this.goal[1] = goal[1];
+				
+				if (goal[0] == null) {
+					
+					this.goal[0] = goal[1];
+				}
+			}
+		}
+		
 	}
 	
+	/*
+	 * The boid's "viewing" angle, in radians, counted simultaneously clockwise 
+	 * and counter clockwise from the direction of the boid's velocity vector
+	 * Note that, then, the viewing angle is actually double the value set.
+	 * 
+	 */
 	public void setViewAngle(double viewAngle) {
 		this.viewAngle = viewAngle;
 		this.viewCosine = Math.cos(viewAngle);
 	}
 	
-	public void setVelocity(Vector velocity) {
-		this.velocity = velocity;
-	}
-
+	/**
+	 * The set of all the other boids
+	 * 
+	 * @param otherBoids
+	 */
 	public void setOtherBoids(List<Boid> otherBoids) {
 		this.otherBoids = otherBoids;
 	}
 	
-	public int getMaxX() {
+	/* 
+	 * Set MaxX and MaxY properties to make the boids move on a toroidal space.
+	 * Leave both values at 0 (it's default) to avoid a closed loop
+	 */
+	private int getMaxX() {
 		return maxX;
 	}
-	
 	public void setMaxX(int x) {
 		this.maxX = x;
 	}
 	
-	public int getMaxY() {
+	private int getMaxY() {
 		return maxY;
 	}
-	
 	public void setMaxY(int y) {
 		this.maxY = y;
 	}
 	
-	public List<Boid> getNearbyBoids() {
-		
-		List<Boid> nearbyBoids = new ArrayList<Boid>();
+	public void setDebugOn() {
+		this.debug = true;
+	}
+	
+	/**
+	 * Get's the boids "at sight". That is, those boids which distance to this 
+	 * boid is smaller than RADIUS and are within this boid's viewing angle
+	 * 
+	 * @return
+	 */
+	protected void searchNearbyBoids() {
 		
 		for (Boid boid : this.otherBoids) {
 			
@@ -126,7 +220,14 @@ public class Boid {
 
 				if (this.isStationary()) {
 
-					nearbyBoids.add(boid);
+					if (boid.isObstacle()) {
+
+						this.nearbyObstacles.add(boid);
+						
+					} else {
+						
+						this.nearbyBoids.add(boid);
+					}
 					
 				} else {
 					
@@ -138,24 +239,43 @@ public class Boid {
 					
 					if (cosine >= this.viewCosine && cosine <= 1) {
 						
-						nearbyBoids.add(boid);
+						if (boid.isObstacle()) {
+
+							this.nearbyObstacles.add(boid);
+							
+						} else {
+							
+							this.nearbyBoids.add(boid);
+						}
 					}
 				}
 			}
 		}
-		
-		return nearbyBoids;
 	}
 	
+	/*
+	 * For testing purposes only
+	 */
+	public List<Boid> getNearbyBoids() {
+		this.searchNearbyBoids();
+		return this.nearbyBoids;
+	}
+	
+	/**
+	 * Allows change to the boids viewing distance. Note that this method will 
+	 * change the setting for ALL boids
+	 * 
+	 * @param otherBoidsRadius
+	 */
 	public static void setRadius(double otherBoidsRadius) {
 		radius = otherBoidsRadius;
 	}
 	
 	private boolean isStationary() {
-		return (this.velocity.x == 0.0) && (this.velocity.y == 0.0);
+		return (this.currentVelocity.x == 0.0) && (this.currentVelocity.y == 0.0);
 	}
 	
-	public double distance(Boid other) {
+	private double distance(Boid other) {
 		
 		Vector distance = new Vector();
 		distance.copy(this.getPosition());
@@ -165,8 +285,11 @@ public class Boid {
 	
 	private void updatePosition() {
 		
-		this.oldPosition = this.position;
-		this.position = this.modulo(Vector.add(this.position, this.velocity));
+		if (this.isDebugEnabled()) {
+			log.debug(this.getName() + "'s position is " + this.getPosition());
+		}
+		
+		this.currentPosition = this.modulo(Vector.add(this.currentPosition, this.newVelocity));
 	}
 	
 	private Vector modulo(Vector vector) {
@@ -181,6 +304,7 @@ public class Boid {
 			}
 			
 			if (vector.x < 0) {
+				
 				moduloVector.x = this.getMaxX() - vector.x;
 			}
 			
@@ -196,15 +320,30 @@ public class Boid {
 		
 		return moduloVector;
 	}
-	
+
+	/**
+	 * Updates the position based on the previously calculated velocity
+	 * 
+	 */
 	public void update() {
+		
+		this.updatePosition();
+		this.currentVelocity = this.newVelocity;
+	}
+	
+	public void calculateNewVelocity() {
+		
+		this.nearbyBoids.clear();
+		this.nearbyObstacles.clear();
 		
 		if (!obstacle) {
 			
-			Vector velocityShiftDueToRule1 = this.moveTowardsPercievedMassCenter().multiply(CENTER_OF_MASS_AFFINITY);
+			this.searchNearbyBoids();
+			
+			Vector velocityShiftDueToRule1 = this.moveTowardsPercievedMassCenter();
 			Vector velocityShiftDueToRule2 = this.keepDistanceFromSurroundingObjects();
 			Vector velocityShiftDueToRule3 = this.matchOtherBoidsVelocity();
-			Vector velocityShiftDueToRule4 = this.moveTowardsGoal().multiply(GOAL_AFFINITY);
+			Vector velocityShiftDueToRule4 = this.moveTowardsGoal();
 			
 			Vector finalVelocity = this.limitVelocity(Vector.add(
 					velocityShiftDueToRule1, 
@@ -212,7 +351,7 @@ public class Boid {
 					velocityShiftDueToRule3, 
 					velocityShiftDueToRule4));
 			
-			if (log.isDebugEnabled()) {
+			if (this.isDebugEnabled()) {
 				
 				log.debug(this.getName() + "'s velocity shift due to rule 1 (mass center) is " + velocityShiftDueToRule1);
 				log.debug(this.getName() + "'s velocity shift due to rule 2 (distance to others) is " + velocityShiftDueToRule2);
@@ -221,11 +360,87 @@ public class Boid {
 				log.debug(this.getName() + "'s final velocity is " + finalVelocity);
 			}
 			
-			this.setVelocity(finalVelocity);
-			this.updatePosition();
+			this.setNewVelocity(finalVelocity);
 		}
 	}
+
+	private boolean isDebugEnabled() {
+		return this.debug && log.isDebugEnabled();
+	}
+
+	/**
+	 * The vector representing the boid's velocity towards the actual goal.
+	 * This method is different from getVelocity() because it calculates the 
+	 * velocity in reference to the goal, rather than its absolute velocity.
+	 * Because the space is 2D, boids may be moving away from the goal (or not 
+	 * directly towards it) 
+	 * 
+	 * @param currentVelocity
+	 * @return
+	 */
+	public Vector velocityTowardsGoal() {
+		
+		Vector distanceToGoal = this.distanceToGoal();
+		
+		return distanceToGoal.multiply(Vector.scalarProduct(this.getVelocity(), distanceToGoal) / Vector.scalarProduct(distanceToGoal, distanceToGoal));
+	}
 	
+	private Vector distanceToGoal() {
+
+		return Vector.subtract(this.actualGoal(), this.getPosition());
+	}
+
+	/**
+	 * Determines the actual point where this boid is heading
+	 * If the goal null, it'll return null
+	 * If the goal is a single point, it'll return that
+	 * Otherwise, it'll project the boid's velocity onto the line containing 
+	 * the segment and return the point of the segment where it projected or
+	 * the extreme of the segment closest to that point.
+	 * 
+	 * @return
+	 */
+	private Vector actualGoal() {
+
+		// Adapted from http://stackoverflow.com/questions/849211/shortest-distance-between-a-point-and-a-line-segment/1501725#1501725
+		
+		Vector goal = this.goal != null && this.goal.length > 0 ? this.goal[0] : null;
+
+		if (this.goal != null) {
+			
+			if (this.goal[0] != null && this.goal[1] != null) {
+				
+				Vector goalSegment = Vector.subtract(this.goal[1], this.goal[0]);
+				double goalLength = goalSegment.length();
+				double goalLengthSquared = goalLength * goalLength;
+				
+				if (goalLengthSquared == 0.0) {
+					
+					goal = this.goal[0];
+					
+				} else {
+					
+					double projectionOntoLine = Vector.scalarProduct(Vector.subtract(this.currentPosition, this.goal[0]), Vector.subtract(this.goal[1], this.goal[0])) / goalLengthSquared;
+					
+					if (projectionOntoLine < 0.0) {
+						
+						goal = this.goal[0];
+						
+					} else if (projectionOntoLine > 1.0) {
+						
+						goal = this.goal[1];
+						
+					} else {
+						
+						goal = Vector.add(this.goal[0], goalSegment.multiply(projectionOntoLine));
+					}
+				}
+			}
+		}
+		
+		return goal;
+	}
+
 	private Vector limitVelocity(Vector rawVelocity) {
 
 		Vector finalVelocity = new Vector(rawVelocity);
@@ -239,26 +454,31 @@ public class Boid {
 		return finalVelocity;
 	}
 
-	public static Boid createRandomBoid(int x, int y) {
+	public static Boid createRandomBoid(long x, long y) {
+		
+		return createRandomBoid(0, 0, x, y);
+	}
+	
+	public static Boid createRandomBoid(long minX, long minY, long maxX, long maxY) {
 		
 		Boid boid = new Boid();
 		
-		boid.position = Vector.createRandomVector(x, y, false);
-		boid.velocity = new Vector();
+		boid.currentPosition = Vector.createRandomVector(minX, minY, maxX, maxY);
+		boid.currentVelocity = new Vector();
 		
 		log.debug("Created new random boid " + boid);
 		return boid;
 	}
-	
+
 	@Override
 	public String toString() {
 		
 		StringBuilder sb = new StringBuilder(this.name);
 
 		sb.append("[Position:");
-		sb.append(this.position);
+		sb.append(this.currentPosition);
 		sb.append(";Velocity:");
-		sb.append(this.velocity);
+		sb.append(this.currentVelocity);
 		sb.append("]");
 		
 		return sb.toString();
@@ -267,17 +487,16 @@ public class Boid {
 	private Vector moveTowardsPercievedMassCenter() {
 		
 		Vector centerOfMass = new Vector(0,0);
-		List<Boid> nearbyBoids = this.getNearbyBoids();
 		Vector velocityShift = new Vector(0,0);
 		
-		if (nearbyBoids.size() > 0) {
+		if (this.nearbyBoids.size() > 0) {
 			
-			for (Boid nearbyBoid : nearbyBoids) {
+			for (Boid nearbyBoid : this.nearbyBoids) {
 				
 				centerOfMass = Vector.add(centerOfMass, nearbyBoid.getPosition());
 			}
 			
-			centerOfMass.divide(nearbyBoids.size());
+			centerOfMass.divide(this.nearbyBoids.size());
 			velocityShift = Vector.subtract(centerOfMass, this.getPosition());
 		}
 
@@ -289,9 +508,11 @@ public class Boid {
 		final double power = 2;
 		
 		Vector collisionAvoidance = new Vector(0,0);
-		List<Boid> nearbyBoids = this.getNearbyBoids();
+		List<Boid> nearbyBoidsAndObstacles = new LinkedList<Boid>();
+		nearbyBoidsAndObstacles.addAll(this.nearbyBoids);
+		nearbyBoidsAndObstacles.addAll(this.nearbyObstacles);
 		
-		for (Boid nearbyBoid : nearbyBoids) {
+		for (Boid nearbyBoid : nearbyBoidsAndObstacles) {
 			
 			Vector distanceVector = Vector.subtract(nearbyBoid.getPosition(), this.getPosition());
 			double distance = distanceVector.length();
@@ -312,21 +533,16 @@ public class Boid {
 	private Vector matchOtherBoidsVelocity() {
 		
 		Vector othersVelocity = new Vector(0, 0);
-		List<Boid> nearbyBoids = this.getNearbyBoids();
 		Vector velocityShift = new Vector(0,0);
 		
-		if (nearbyBoids.size() > 0) {
+		if (this.nearbyBoids.size() > 0) {
 			
-			for (Boid nearbyBoid : nearbyBoids) {
+			for (Boid nearbyBoid : this.nearbyBoids) {
 				
-				// Ignores obstacle Boids velocity
-				if (!nearbyBoid.isObstacle()) {
-					
-					othersVelocity = Vector.add(othersVelocity, nearbyBoid.getVelocity());
-				}
+				othersVelocity = Vector.add(othersVelocity, nearbyBoid.getVelocity());
 			}
 			
-			othersVelocity.divide(nearbyBoids.size());
+			othersVelocity.divide(this.nearbyBoids.size());
 			velocityShift = Vector.subtract(othersVelocity, this.getVelocity());
 		}
 
@@ -339,10 +555,10 @@ public class Boid {
 		
 		if (this.goal != null) {
 			
-			goalDirection = Vector.subtract(this.getGoal(), this.getPosition());
+			goalDirection = Vector.subtract(this.actualGoal(), this.getPosition());
 		}
 		
-		return goalDirection.normalize();
+		return goalDirection.normalize().multiply(MAX_VELOCITY);
 	}
 	
 }
