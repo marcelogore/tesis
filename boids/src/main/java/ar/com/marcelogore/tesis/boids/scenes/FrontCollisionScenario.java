@@ -26,10 +26,10 @@ public class FrontCollisionScenario extends Scenario {
 		
 		List<Boid> boids = new ArrayList<Boid>();
 		
-		final Vector goal1 = new Vector(400,201);
+		final Vector goal1 = new Vector(400,200);
 		final Vector goal2 = new Vector(0,200);
 		
-		Boid boid1 = new Boid(new Vector(0,201), new Vector());
+		Boid boid1 = new Boid(new Vector(0,200), new Vector());
 		boid1.setName("Boid1");
 		boid1.setGoal(goal1);
 		boid1.setMaxX((int) this.getSceneSize().x);

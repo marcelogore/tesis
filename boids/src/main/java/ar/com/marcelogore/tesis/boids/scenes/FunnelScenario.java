@@ -27,16 +27,20 @@ public class FunnelScenario extends Scenario {
 		List<Boid> boids = new ArrayList<Boid>();
 		
 		// Vuelen a la esquina contraria
-		final Vector goal = new Vector(this.getSceneSize());
+		final Vector goalA = new Vector(1180,820);
+		final Vector goalB = new Vector(1220,780);
 		
 		for (int i = 0; i < 100; i++) {
 			
 			Boid boid = Boid.createRandomBoid(300, 300);
 			boid.setName("Boid" + i);
-			boid.setGoal(goal);
+			boid.setGoal(goalA, goalB);
 			
 			boids.add(boid);
 			boid.setOtherBoids(boids);
+			
+			boid.setMaxX((int) getSceneSize().x);
+			boid.setMaxY((int) getSceneSize().y);
 
 			representedBoids.add(new CircularBoid(boid));
 			log.debug("New boid " + boid);

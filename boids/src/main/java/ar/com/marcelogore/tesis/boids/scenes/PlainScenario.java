@@ -7,41 +7,43 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import ar.com.marcelogore.tesis.boids.Boid;
 import ar.com.marcelogore.tesis.boids.CircularBoid;
 import ar.com.marcelogore.tesis.boids.util.Vector;
 
 public class PlainScenario extends Scenario {
 
-	private static final Log log = LogFactory.getLog(PlainScenario.class);
-	
 	@Override
 	public Scene createScene() {
 		
 		List<Boid> boids = new ArrayList<Boid>();
 		
-		// Vuelen a la esquina contraria
-		final Vector goal = new Vector(1200,800);
+		final Vector goalA = new Vector(301,0);
+		final Vector goalB = new Vector(301,200);
 		
 		for (int i = 0; i < 300; i++) {
 			
-			Boid boid = Boid.createRandomBoid(300, 300);
+			Boid boid = Boid.createRandomBoid(Math.round(getSceneSize().x), Math.round(getSceneSize().y));
 			boid.setName("Boid" + i);
-			boid.setGoal(goal);
+			boid.setGoal(goalA, goalB);
 			
 			boids.add(boid);
 			boid.setOtherBoids(boids);
 
+			boid.setMaxX((int) getSceneSize().x);
+			boid.setMaxY((int) getSceneSize().y);
+
 			representedBoids.add(new CircularBoid(boid));
-			log.debug("New boid " + boid);
 		}
 
 		final Group group = new Group(representedBoids.toArray(new Circle[0]));
 		
-		return new Scene(group, 1200, 800, Color.WHITE);
+		return new Scene(group, getSceneSize().x, getSceneSize().y, Color.WHITE);
 	}
+	
+	@Override
+	public Vector getSceneSize() {
+		return new Vector(300,200);
+	}
+
 }

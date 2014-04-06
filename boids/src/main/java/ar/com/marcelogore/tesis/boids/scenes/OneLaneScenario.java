@@ -8,10 +8,6 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import ar.com.marcelogore.tesis.boids.Boid;
 import ar.com.marcelogore.tesis.boids.CircularBoid;
 import ar.com.marcelogore.tesis.boids.util.ScenaryCreator;
@@ -19,21 +15,20 @@ import ar.com.marcelogore.tesis.boids.util.Vector;
 
 public class OneLaneScenario extends Scenario {
 
-	private static final Log log = LogFactory.getLog(OneLaneScenario.class);
-	
 	@Override
 	public Scene createScene() {
 
 		List<Boid> boids = new ArrayList<Boid>();
 		
 		// Vuelen a la banda contraria
-		final Vector goal = new Vector(this.getSceneSize().x, 177.5);
-		
+		final Vector goalA = new Vector(this.getSceneSize().x, 100);
+		final Vector goalB = new Vector(this.getSceneSize().x, 150);
+
 		for (int j = 0; j < 100; j++) {
 			
-			Boid boid = new Boid(new Vector(10 * j, 200), new Vector());
+			Boid boid = Boid.createRandomBoid(0, 100, 800, 50);
 			boid.setName("Boid" + j);
-			boid.setGoal(goal);
+			boid.setGoal(goalA, goalB);
 			
 			boids.add(boid);
 			boid.setOtherBoids(boids);
@@ -42,14 +37,13 @@ public class OneLaneScenario extends Scenario {
 			boid.setMaxY((int) getSceneSize().y);
 
 			representedBoids.add(new CircularBoid(boid));
-			log.debug("New boid " + boid);
 		}
 
 		List<CircularBoid> obstacles = new LinkedList<CircularBoid>();
 		
 		// Ancho inicial
-		ScenaryCreator.drawLine(obstacles, new Vector(0,185), new Vector(1400,185));
-		ScenaryCreator.drawLine(obstacles, new Vector(0,215), new Vector(1400,215));
+		ScenaryCreator.drawLine(obstacles, new Vector(0,100), new Vector(800,100));
+		ScenaryCreator.drawLine(obstacles, new Vector(0,150), new Vector(800,150));
 		
 		representedBoids.addAll(obstacles);
 		for (CircularBoid cBoid : obstacles) {
@@ -63,7 +57,7 @@ public class OneLaneScenario extends Scenario {
 
 	@Override
 	public Vector getSceneSize() {
-		return new Vector(1400,400);
+		return new Vector(800,250);
 	}
 
 }
