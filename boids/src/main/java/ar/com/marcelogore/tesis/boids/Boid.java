@@ -321,6 +321,47 @@ public class Boid {
 		return moduloVector;
 	}
 
+	public int boidCollisionCount() {
+		
+		int collisionCount = 0;
+		
+		for (Boid nearbyBoid : this.nearbyBoids) {
+			
+			if (this.distance(nearbyBoid) < 10) {
+				
+				collisionCount++;
+				log.debug(this.name + this.currentPosition + " collided with obstacle in " + nearbyBoid.currentPosition);
+			}
+		}
+		
+		if (this.isDebugEnabled()) {
+			log.debug("This boid collided with " + collisionCount + " other boids in this time-step");
+		}
+		
+		return collisionCount;
+	}
+
+	public int obstacleCollisionCount() {
+		
+		int collisionCount = 0;
+
+		for (Boid obstacle : this.nearbyObstacles) {
+			
+			if (this.distance(obstacle) < 10) {
+				
+				collisionCount++;
+				log.debug(this.name + this.currentPosition + " collided with obstacle in " + obstacle.currentPosition);
+			}
+		}
+		
+		if (this.isDebugEnabled()) {
+			log.debug("This boid collided with " + collisionCount + " obstacles in this time-step");
+		}
+		
+		return collisionCount;
+	}
+	
+	
 	/**
 	 * Updates the position based on the previously calculated velocity
 	 * 
@@ -558,7 +599,7 @@ public class Boid {
 			goalDirection = Vector.subtract(this.actualGoal(), this.getPosition());
 		}
 		
-		return goalDirection.normalize().multiply(MAX_VELOCITY);
+		return goalDirection.normalize();
 	}
 	
 }

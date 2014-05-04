@@ -1,45 +1,59 @@
 package ar.com.marcelogore.tesis.boids.util;
 
-import java.util.LinkedList;
-import java.util.List;
 
 public class StepDataAnalyzer {
 
-	private List<Vector> absoluteVelocities;
-	private List<Vector> actualVelocities;
+	private int boidCount;
 	
 	private double absoluteVelocitiesSum;
 	private double actualVelocitiesSum;
 	
-	public StepDataAnalyzer() {
-		
-		this.absoluteVelocities = new LinkedList<Vector>();
-		this.actualVelocities = new LinkedList<Vector>();
-	}
+	private int boidCollisionCount;
+	private int obstacleCollisionCount;
 	
 	public void addBoidAbsoluteVelocity(Vector velocity) {
 
-//System.out.println("Absolute: " + velocity);
-
-		this.absoluteVelocities.add(velocity);
 		this.absoluteVelocitiesSum += velocity.length();
 	}
 
 	public void addBoidActualVelocity(Vector velocityTowardsGoal) {
 
-//System.out.println("Actual: " + velocityTowardsGoal);
-		
-		this.actualVelocities.add(velocityTowardsGoal);
 		this.actualVelocitiesSum += velocityTowardsGoal.length();
 	}
 
 	public double calculateAbsoluteVelocity() {
 		
-		return this.absoluteVelocitiesSum / this.absoluteVelocities.size(); 
+		return this.absoluteVelocitiesSum / this.boidCount; 
 	}
 
 	public double calculateActualVelocity() {
 		
-		return this.actualVelocitiesSum / this.actualVelocities.size(); 
+		return this.actualVelocitiesSum / this.boidCount; 
+	}
+
+	public void addBoidCollisionCount(int boidCollisionCount) {
+		this.boidCollisionCount += boidCollisionCount;
+	}
+	
+	public void addObstacleCollisionCount(int obstacleCollisionCount) {
+		this.obstacleCollisionCount += obstacleCollisionCount;
+	}
+	
+	public double calculateCollisionCount() {
+		
+		return obstacleCollisionCount + boidCollisionCount / 2;
+	}
+	
+	public void nextBoid() {
+		this.boidCount++;
+	}
+	
+	public void nextTimeStep() {
+		
+		this.boidCount = 0;
+		this.boidCollisionCount = 0;
+		this.obstacleCollisionCount = 0;
+		this.absoluteVelocitiesSum = 0;
+		this.actualVelocitiesSum = 0;
 	}
 }

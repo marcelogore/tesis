@@ -13,6 +13,10 @@ import ar.com.marcelogore.tesis.boids.util.Vector;
 
 public class PlainScenario extends Scenario {
 
+	public PlainScenario(Integer numberOfBoids) {
+		this.setNumberOfBoids(numberOfBoids);
+	}
+	
 	@Override
 	public Scene createScene() {
 		
@@ -21,7 +25,7 @@ public class PlainScenario extends Scenario {
 		final Vector goalA = new Vector(301,0);
 		final Vector goalB = new Vector(301,200);
 		
-		for (int i = 0; i < 300; i++) {
+		for (int i = 0; i < this.getNumberOfBoids(); i++) {
 			
 			Boid boid = Boid.createRandomBoid(Math.round(getSceneSize().x), Math.round(getSceneSize().y));
 			boid.setName("Boid" + i);

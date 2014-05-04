@@ -15,18 +15,22 @@ import ar.com.marcelogore.tesis.boids.util.Vector;
 
 public class OneLaneScenario extends Scenario {
 
+	public OneLaneScenario(Integer numberOfBoids) {
+		this.setNumberOfBoids(numberOfBoids);
+	}
+	
 	@Override
 	public Scene createScene() {
 
 		List<Boid> boids = new ArrayList<Boid>();
 		
 		// Vuelen a la banda contraria
-		final Vector goalA = new Vector(this.getSceneSize().x, 100);
-		final Vector goalB = new Vector(this.getSceneSize().x, 150);
+		final Vector goalA = new Vector(this.getSceneSize().x, 10);
+		final Vector goalB = new Vector(this.getSceneSize().x, 50);
 
-		for (int j = 0; j < 100; j++) {
+		for (int j = 0; j < this.getNumberOfBoids(); j++) {
 			
-			Boid boid = Boid.createRandomBoid(0, 100, 800, 50);
+			Boid boid = Boid.createRandomBoid(0, 10, 800, 40);
 			boid.setName("Boid" + j);
 			boid.setGoal(goalA, goalB);
 			
@@ -42,8 +46,8 @@ public class OneLaneScenario extends Scenario {
 		List<CircularBoid> obstacles = new LinkedList<CircularBoid>();
 		
 		// Ancho inicial
-		ScenaryCreator.drawLine(obstacles, new Vector(0,100), new Vector(800,100));
-		ScenaryCreator.drawLine(obstacles, new Vector(0,150), new Vector(800,150));
+		ScenaryCreator.drawLine(obstacles, new Vector(0,5), new Vector(800,5));
+		ScenaryCreator.drawLine(obstacles, new Vector(0,55), new Vector(800,55));
 		
 		representedBoids.addAll(obstacles);
 		for (CircularBoid cBoid : obstacles) {
@@ -57,7 +61,7 @@ public class OneLaneScenario extends Scenario {
 
 	@Override
 	public Vector getSceneSize() {
-		return new Vector(800,250);
+		return new Vector(800,60);
 	}
 
 }
