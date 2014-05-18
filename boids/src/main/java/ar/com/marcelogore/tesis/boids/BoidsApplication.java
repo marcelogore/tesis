@@ -100,6 +100,11 @@ public class BoidsApplication extends Application {
 								log.debug(circularBoid.getBoid().getName() + " boid collision count is " + boidCollisionCount);
 							}
 						}
+
+						if (circularBoid.getBoid().crossedGoal()) {
+							
+							stepDataAnalyzer.increaseGoalReachedCount();
+						}
 						
 						stepDataAnalyzer.nextBoid();
 					}
@@ -112,7 +117,11 @@ public class BoidsApplication extends Application {
 					}
 				}
 				
-				log.info(step + "\t" + stepDataAnalyzer.calculateAbsoluteVelocity() + "\t" + stepDataAnalyzer.calculateActualVelocity() + "\t" + stepDataAnalyzer.calculateCollisionCount());
+				log.info(step + "\t" + 
+						 stepDataAnalyzer.calculateAbsoluteVelocity() + "\t" + 
+						 stepDataAnalyzer.calculateActualVelocity() + "\t" + 
+						 stepDataAnalyzer.calculateCollisionCount() + "\t" + 
+						 stepDataAnalyzer.calculateGoalReachedCount());
 			}
 		};
 

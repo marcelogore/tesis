@@ -36,6 +36,8 @@ public class Boid {
 	private int maxY;
 	private boolean debug;
 	
+	private boolean crossedGoal;
+	
 	public Boid() {
 		this.name = "Boid";
 	}
@@ -204,6 +206,10 @@ public class Boid {
 		this.debug = true;
 	}
 	
+	public boolean crossedGoal() {
+		return crossedGoal;
+	}
+	
 	/**
 	 * Get's the boids "at sight". That is, those boids which distance to this 
 	 * boid is smaller than RADIUS and are within this boid's viewing angle
@@ -289,9 +295,31 @@ public class Boid {
 			log.debug(this.getName() + "'s position is " + this.getPosition());
 		}
 		
-		this.currentPosition = this.modulo(Vector.add(this.currentPosition, this.newVelocity));
+		Vector newPosition = Vector.add(this.currentPosition, this.newVelocity);
+		
+		this.crossedGoal = this.crossedGoal(newPosition);
+		
+		this.currentPosition = this.modulo(newPosition);
 	}
 	
+	/**
+	 * Works only for vertically positioned goals in algorithms with modulo enabled.
+	 * Also, the goal must be further to the right, just before the modulo kicks in. 
+	 * 
+	 * @param newPosition
+	 * @return
+	 */
+	private boolean crossedGoal(Vector newPosition) {
+
+		boolean crossedGoal = false;
+		
+		if (newPosition.x > this.goal[0].x) {
+			crossedGoal = true;
+		}
+		
+		return crossedGoal;
+	}
+
 	private Vector modulo(Vector vector) {
 		
 		Vector moduloVector = new Vector(vector);

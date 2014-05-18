@@ -11,6 +11,8 @@ public class StepDataAnalyzer {
 	private int boidCollisionCount;
 	private int obstacleCollisionCount;
 	
+	private int goalReachedCount;
+	
 	public void addBoidAbsoluteVelocity(Vector velocity) {
 
 		this.absoluteVelocitiesSum += velocity.length();
@@ -44,6 +46,14 @@ public class StepDataAnalyzer {
 		return obstacleCollisionCount + boidCollisionCount / 2;
 	}
 	
+	public void increaseGoalReachedCount() {
+		this.goalReachedCount++;
+	}
+
+	public double calculateGoalReachedCount() {
+		return this.goalReachedCount;
+	}
+	
 	public void nextBoid() {
 		this.boidCount++;
 	}
@@ -55,5 +65,6 @@ public class StepDataAnalyzer {
 		this.obstacleCollisionCount = 0;
 		this.absoluteVelocitiesSum = 0;
 		this.actualVelocitiesSum = 0;
+		this.goalReachedCount = 0;
 	}
 }
