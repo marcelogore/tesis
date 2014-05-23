@@ -42,8 +42,6 @@ public class IntersectionScenario extends Scenario {
 			boid.setMaxX((int) getSceneSize().x);
 			boid.setMaxY((int) getSceneSize().y);
 
-			boid.setCalculateFlow(false);
-			
 			representedBoids.add(new CircularBoid(boid, Color.RED));
 		}
 

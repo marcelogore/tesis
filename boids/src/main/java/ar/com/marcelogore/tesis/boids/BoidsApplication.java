@@ -101,7 +101,7 @@ public class BoidsApplication extends Application {
 							}
 						}
 
-						if (circularBoid.getBoid().getCalculateFlow() && circularBoid.getBoid().getCrossedGoal()) {
+						if (circularBoid.getBoid().getCrossedGoal()) {
 							
 							stepDataAnalyzer.increaseGoalReachedCount();
 						}

@@ -37,7 +37,6 @@ public class Boid {
 	private boolean debug;
 	
 	private boolean crossedGoal;
-	private boolean calculateFlow = true;
 	
 	public Boid() {
 		this.name = "Boid";
@@ -211,14 +210,6 @@ public class Boid {
 		return crossedGoal;
 	}
 	
-	public boolean getCalculateFlow() {
-		return calculateFlow;
-	}
-	
-	public void setCalculateFlow(boolean calculateFlow) {
-		this.calculateFlow = calculateFlow;
-	}
-	
 	/**
 	 * Get's the boids "at sight". That is, those boids which distance to this 
 	 * boid is smaller than RADIUS and are within this boid's viewing angle
@@ -311,22 +302,13 @@ public class Boid {
 		this.currentPosition = this.modulo(newPosition);
 	}
 	
-	/**
-	 * Works only for vertically positioned goals in algorithms with modulo enabled.
-	 * Also, the goal must be further to the right, just before the modulo kicks in. 
-	 * 
-	 * @param newPosition
-	 * @return
-	 */
 	private boolean crossedGoal(Vector newPosition) {
 
-		boolean crossedGoal = false;
+		Vector actualGoal = this.actualGoal();
+		Vector distanceToActualGoal = Vector.subtract(newPosition, actualGoal);
+		Vector position = this.getPosition();
 		
-		if (this.calculateFlow && newPosition.x > this.goal[0].x) {
-			crossedGoal = true;
-		}
-		
-		return crossedGoal;
+		return Vector.scalarProduct(distanceToActualGoal, position) > 0;
 	}
 
 	private Vector modulo(Vector vector) {
