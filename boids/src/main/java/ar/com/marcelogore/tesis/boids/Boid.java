@@ -37,6 +37,7 @@ public class Boid {
 	private boolean debug;
 	
 	private boolean crossedGoal;
+	private boolean calculateFlow = true;
 	
 	public Boid() {
 		this.name = "Boid";
@@ -206,8 +207,16 @@ public class Boid {
 		this.debug = true;
 	}
 	
-	public boolean crossedGoal() {
+	public boolean getCrossedGoal() {
 		return crossedGoal;
+	}
+	
+	public boolean getCalculateFlow() {
+		return calculateFlow;
+	}
+	
+	public void setCalculateFlow(boolean calculateFlow) {
+		this.calculateFlow = calculateFlow;
 	}
 	
 	/**
@@ -313,7 +322,7 @@ public class Boid {
 
 		boolean crossedGoal = false;
 		
-		if (newPosition.x > this.goal[0].x) {
+		if (this.calculateFlow && newPosition.x > this.goal[0].x) {
 			crossedGoal = true;
 		}
 		
@@ -444,14 +453,13 @@ public class Boid {
 	 * Because the space is 2D, boids may be moving away from the goal (or not 
 	 * directly towards it) 
 	 * 
-	 * @param currentVelocity
 	 * @return
 	 */
-	public Vector velocityTowardsGoal() {
+	public double velocityTowardsGoal() {
 		
 		Vector distanceToGoal = this.distanceToGoal();
 		
-		return distanceToGoal.multiply(Vector.scalarProduct(this.getVelocity(), distanceToGoal) / Vector.scalarProduct(distanceToGoal, distanceToGoal));
+		return Vector.scalarProduct(distanceToGoal, this.getVelocity()) / distanceToGoal.length();
 	}
 	
 	private Vector distanceToGoal() {

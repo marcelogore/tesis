@@ -18,9 +18,9 @@ public class StepDataAnalyzer {
 		this.absoluteVelocitiesSum += velocity.length();
 	}
 
-	public void addBoidActualVelocity(Vector velocityTowardsGoal) {
+	public void addBoidActualVelocity(double velocityTowardsGoal) {
 
-		this.actualVelocitiesSum += velocityTowardsGoal.length();
+		this.actualVelocitiesSum += velocityTowardsGoal;
 	}
 
 	public double calculateAbsoluteVelocity() {
