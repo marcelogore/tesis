@@ -103,4 +103,112 @@ public class VectorTest {
 		
 		assertEquals(0, vector.length(), 0.0001);
 	}
+	
+	@Test
+	public void subtractInToroid() {
+		
+		Vector a = new Vector(400,100);
+		Vector b = new Vector(300,100);
+		
+		Vector x = Vector.subtractInToroid(a, b);
+		
+		assertEquals(100, x.x, 0.001);
+		assertEquals(0, x.y, 0.001);
+	}
+
+	@Test
+	public void subtractInToroidInverse() {
+		
+		Vector a = new Vector(400,100);
+		Vector b = new Vector(300,100);
+		
+		Vector x = Vector.subtractInToroid(b, a);
+		
+		assertEquals(-100, x.x, 0.001);
+		assertEquals(0, x.y, 0.001);
+	}
+
+	@Test
+	public void subtractInToroidNearLimitX() {
+		
+		Vector c = new Vector(800,100);
+		Vector b = new Vector(300,100);
+		
+		Vector x = Vector.subtractInToroid(c, b);
+		
+		assertEquals(-300, x.x, 0.001);
+		assertEquals(0, x.y, 0.001);
+	}
+
+	@Test
+	public void subtractInToroidNearLimitXInverse() {
+		
+		Vector c = new Vector(800,100);
+		Vector b = new Vector(300,100);
+		
+		Vector x = Vector.subtractInToroid(b, c);
+		
+		assertEquals(300, x.x, 0.001);
+		assertEquals(0, x.y, 0.001);
+	}
+
+	@Test
+	public void subtractInToroidSamePoint() {
+		
+		Vector d = new Vector(550,0);
+		Vector e = new Vector(550,200);
+		
+		Vector x = Vector.subtractInToroid(d, e);
+		
+		assertEquals(0, x.x, 0.001);
+		assertEquals(0, x.y, 0.001);
+	}
+
+	@Test
+	public void subtractInToroidSamePointInverse() {
+		
+		Vector d = new Vector(550,0);
+		Vector e = new Vector(550,200);
+		
+		Vector x = Vector.subtractInToroid(e, d);
+		
+		assertEquals(0, x.x, 0.001);
+		assertEquals(0, x.y, 0.001);
+	}
+
+	@Test
+	public void subtractInToroidNearLimitY() {
+		
+		Vector d = new Vector(550,0);
+		Vector f = new Vector(550,150);
+		
+		Vector x = Vector.subtractInToroid(d, f);
+		
+		assertEquals(0, x.x, 0.001);
+		assertEquals(50, x.y, 0.001);
+	}
+
+	@Test
+	public void subtractInToroidNearLimitYInverse() {
+		
+		Vector d = new Vector(550,0);
+		Vector f = new Vector(550,150);
+		
+		Vector x = Vector.subtractInToroid(f, d);
+		
+		assertEquals(0, x.x, 0.001);
+		assertEquals(-50, x.y, 0.001);
+	}
+
+	@Test
+	public void subtractInToroidNearLimitXY() {
+		
+		Vector g = new Vector(50,100);
+		Vector f = new Vector(550,150);
+		
+		Vector x = Vector.subtractInToroid(g, f);
+		
+		assertEquals(300, x.x, 0.001);
+		assertEquals(-50, x.y, 0.001);
+	}
 }

@@ -116,7 +116,7 @@ public class BoidsApplication extends Application {
 						circularBoid.update();
 					}
 				}
-				
+
 				log.info(step + "\t" + 
 						 stepDataAnalyzer.calculateAbsoluteVelocity() + "\t" + 
 						 stepDataAnalyzer.calculateActualVelocity() + "\t" + 

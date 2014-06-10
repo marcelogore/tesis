@@ -282,7 +282,7 @@ public class Boid {
 				} else {
 					
 					Vector velocityVector = this.getVelocity();
-					Vector distanceVector = Vector.subtract(boid.getPosition(), this.getPosition());
+					Vector distanceVector = Vector.subtractInToroid(boid.getPosition(), this.getPosition());
 					
 					double cosine = ((distanceVector.x * velocityVector.x) + (distanceVector.y * velocityVector.y)) / 
 							(distanceVector.length() * velocityVector.length());
@@ -330,7 +330,7 @@ public class Boid {
 		Vector distance = new Vector();
 		distance.copy(this.getPosition());
 		
-		return Vector.subtract(distance, other.getPosition()).length();
+		return Vector.subtractInToroid(distance, other.getPosition()).length();
 	}
 	
 	private void updatePosition() {
@@ -632,7 +632,7 @@ public class Boid {
 			}
 			
 			centerOfMass.divide(this.nearbyBoids.size());
-			velocityShift = Vector.subtract(centerOfMass, this.getPosition());
+			velocityShift = Vector.subtractInToroid(centerOfMass, this.getPosition());
 		}
 
 		return velocityShift.normalize();
@@ -649,7 +649,7 @@ public class Boid {
 		
 		for (Boid nearbyBoid : nearbyBoidsAndObstacles) {
 			
-			Vector distanceVector = Vector.subtract(nearbyBoid.getPosition(), this.getPosition());
+			Vector distanceVector = Vector.subtractInToroid(nearbyBoid.getPosition(), this.getPosition());
 			double distance = distanceVector.length();
 			
 			double distanceCorrection = 0;
@@ -659,7 +659,7 @@ public class Boid {
 				distanceCorrection = Math.pow((distance - 25) / 12.0, power);
 			}
 			
-			collisionAvoidance = Vector.subtract(collisionAvoidance, distanceVector.normalize().multiply(distanceCorrection));
+			collisionAvoidance = Vector.subtractInToroid(collisionAvoidance, distanceVector.normalize().multiply(distanceCorrection));
 		}
 		
 		return collisionAvoidance;
@@ -678,7 +678,7 @@ public class Boid {
 			}
 			
 			othersVelocity.divide(this.nearbyBoids.size());
-			velocityShift = Vector.subtract(othersVelocity, this.getVelocity());
+			velocityShift = Vector.subtractInToroid(othersVelocity, this.getVelocity());
 		}
 
 		return velocityShift.normalize();

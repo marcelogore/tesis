@@ -5,6 +5,9 @@ public class Vector {
 	public double x;
 	public double y;
 	
+	private static int maxX = 800;
+	private static int maxY = 200;
+	
 	public Vector() {}
 	
 	public Vector(double x, double y) {
@@ -36,6 +39,20 @@ public class Vector {
 		
 		result.x = a.x - b.x;
 		result.y = a.y - b.y;
+		
+		return result;
+	}
+	
+	public static Vector subtractInToroid(Vector a, Vector b) {
+
+		Vector result = new Vector();
+		double cx = a.x - b.x;
+		double cy = a.y - b.y;
+		double cxComplement = cx >= 0 ? cx - maxX : cx + maxX;
+		double cyComplement = cy >= 0 ? cy - maxY : cy + maxY;
+		
+		result.x = Math.abs(cx) < Math.abs(cxComplement) ? cx : cxComplement;
+		result.y = Math.abs(cy) < Math.abs(cyComplement) ? cy : cyComplement;
 		
 		return result;
 	}

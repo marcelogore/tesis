@@ -64,7 +64,7 @@ public class OneLaneScenario extends Scenario {
 
 	@Override
 	public Vector getSceneSize() {
-		return new Vector(800,60);
+		return new Vector(800,200);
 	}
 
 }
