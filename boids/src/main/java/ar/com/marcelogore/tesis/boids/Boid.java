@@ -23,6 +23,7 @@ public class Boid {
 	private Vector currentVelocity;
 	private Vector newVelocity;
 	private Vector[] goal;
+	private Vector[] checkpoint;
 	
 	private List<Boid> otherBoids;
 	private List<Boid> nearbyBoids = new LinkedList<Boid>();
@@ -37,9 +38,11 @@ public class Boid {
 	private boolean debug;
 	
 	private boolean crossedGoal;
+	private boolean crossedCheckpoint;
 	
 	public Boid() {
 		this.name = "Boid";
+		this.crossedCheckpoint = true;
 	}
 
 	/**
@@ -52,6 +55,7 @@ public class Boid {
 	public Boid(Vector position, boolean obstacle) {
 		this(position, new Vector(0,0));
 		this.obstacle = obstacle;
+		this.crossedCheckpoint = true;
 	}
 	
 	/**
@@ -65,6 +69,7 @@ public class Boid {
 		this.name = "Boid";
 		this.currentPosition = position;
 		this.currentVelocity = velocity;
+		this.crossedCheckpoint = true;
 	}
 	
 	/**
@@ -164,6 +169,45 @@ public class Boid {
 		
 	}
 	
+	public Vector[] getCheckpoint() {
+		return checkpoint;
+	}
+	
+	public void setCheckpoint(Vector... checkpoint) {
+
+		if ((checkpoint.length > 2) || (checkpoint.length == 2 && (checkpoint[0] == null || checkpoint[1] == null))) {
+			
+			throw new IllegalArgumentException("The goal can either be null, a point (one non-null Vector) or a segment (a pair of non-null Vectors)");
+		}
+		
+		if ((checkpoint == null) || (checkpoint.length == 1 && checkpoint[0] == null) || (checkpoint.length == 2 && checkpoint[1] == null)) {
+			
+			this.checkpoint = null;
+		
+		} else {
+			
+			if (this.checkpoint == null) {
+				
+				this.checkpoint = new Vector[2];
+			}
+
+			if (checkpoint[0] != null) {
+				
+				this.checkpoint[0] = checkpoint[0];
+			}
+			
+			if (checkpoint.length == 2) {
+				
+				this.checkpoint[1] = checkpoint[1];
+				
+				if (checkpoint[0] == null) {
+					
+					this.checkpoint[0] = checkpoint[1];
+				}
+			}
+		}
+	}
+
 	/*
 	 * The boid's "viewing" angle, in radians, counted simultaneously clockwise 
 	 * and counter clockwise from the direction of the boid's velocity vector
@@ -297,18 +341,58 @@ public class Boid {
 		
 		Vector newPosition = Vector.add(this.currentPosition, this.newVelocity);
 		
-		this.crossedGoal = this.crossedGoal(newPosition);
+		if (this.crossedGoal(newPosition)) {
+
+			if (this.crossedCheckpoint) {
+				
+				this.crossedGoal = true;
+				this.crossedCheckpoint = false;
+				
+				if (this.debug) {
+					log.info(this.name + " crossed goal and checkpoint");
+				}
+			} else {
+				
+				this.crossedGoal = false;
+				
+				if (this.debug) {
+					log.info(this.name + " crossed goal but not the checkpoint. It is a re-run");
+				}
+			}
+		} else {
+			
+			this.crossedGoal = false;
+		}
+		
+		if (!this.crossedCheckpoint) {
+			
+			this.crossedCheckpoint = this.crossedCheckpoint(newPosition);
+			
+			if (this.debug) {
+				log.info(this.name + " crossed the checkpoint: " + this.crossedCheckpoint);
+			}
+		}
 		
 		this.currentPosition = this.modulo(newPosition);
 	}
 	
 	private boolean crossedGoal(Vector newPosition) {
 
-		Vector actualGoal = this.actualGoal();
+		Vector actualGoal = this.actualPoint(this.goal);
 		Vector distanceToActualGoal = Vector.subtract(newPosition, actualGoal);
 		Vector position = this.getPosition();
 		
 		return Vector.scalarProduct(distanceToActualGoal, position) > 0;
+	}
+
+	private boolean crossedCheckpoint(Vector newPosition) {
+
+		Vector actualCheckpoint = this.actualPoint(this.checkpoint);
+		
+		Vector distanceToActualCheckpoint = Vector.subtract(newPosition, actualCheckpoint);
+		Vector position = this.getPosition();
+		
+		return Vector.scalarProduct(distanceToActualCheckpoint, position) > 0 && distanceToActualCheckpoint.length() < 10;
 	}
 
 	private Vector modulo(Vector vector) {
@@ -324,7 +408,7 @@ public class Boid {
 			
 			if (vector.x < 0) {
 				
-				moduloVector.x = this.getMaxX() - vector.x;
+				moduloVector.x = this.getMaxX() + vector.x;
 			}
 			
 			if (vector.y > this.getMaxY()) {
@@ -333,7 +417,7 @@ public class Boid {
 			}
 
 			if (vector.y < 0) {
-				moduloVector.y = this.getMaxY() - vector.y;
+				moduloVector.y = this.getMaxY() + vector.y;
 			}
 		}
 		
@@ -401,11 +485,12 @@ public class Boid {
 			this.searchNearbyBoids();
 			
 			Vector velocityShiftDueToRule1 = this.moveTowardsPercievedMassCenter();
-			Vector velocityShiftDueToRule2 = this.keepDistanceFromSurroundingObjects();
+			Vector velocityShiftDueToRule2 = this.keepDistanceFromSurroundingObjects().multiply(2);
 			Vector velocityShiftDueToRule3 = this.matchOtherBoidsVelocity();
 			Vector velocityShiftDueToRule4 = this.moveTowardsGoal();
 			
 			Vector finalVelocity = this.limitVelocity(Vector.add(
+					this.getVelocity(),
 					velocityShiftDueToRule1, 
 					velocityShiftDueToRule2, 
 					velocityShiftDueToRule3, 
@@ -428,15 +513,6 @@ public class Boid {
 		return this.debug && log.isDebugEnabled();
 	}
 
-	/**
-	 * The vector representing the boid's velocity towards the actual goal.
-	 * This method is different from getVelocity() because it calculates the 
-	 * velocity in reference to the goal, rather than its absolute velocity.
-	 * Because the space is 2D, boids may be moving away from the goal (or not 
-	 * directly towards it) 
-	 * 
-	 * @return
-	 */
 	public double velocityTowardsGoal() {
 		
 		Vector distanceToGoal = this.distanceToGoal();
@@ -446,7 +522,7 @@ public class Boid {
 	
 	private Vector distanceToGoal() {
 
-		return Vector.subtract(this.actualGoal(), this.getPosition());
+		return Vector.subtract(this.actualPoint(this.goal), this.getPosition());
 	}
 
 	/**
@@ -459,39 +535,39 @@ public class Boid {
 	 * 
 	 * @return
 	 */
-	private Vector actualGoal() {
+	private Vector actualPoint(Vector[] segment) {
 
 		// Adapted from http://stackoverflow.com/questions/849211/shortest-distance-between-a-point-and-a-line-segment/1501725#1501725
 		
-		Vector goal = this.goal != null && this.goal.length > 0 ? this.goal[0] : null;
+		Vector goal = segment != null && segment.length > 0 ? segment[0] : null;
 
-		if (this.goal != null) {
+		if (segment != null) {
 			
-			if (this.goal[0] != null && this.goal[1] != null) {
+			if (segment[0] != null && segment[1] != null) {
 				
-				Vector goalSegment = Vector.subtract(this.goal[1], this.goal[0]);
+				Vector goalSegment = Vector.subtract(segment[1], segment[0]);
 				double goalLength = goalSegment.length();
 				double goalLengthSquared = goalLength * goalLength;
 				
 				if (goalLengthSquared == 0.0) {
 					
-					goal = this.goal[0];
+					goal = segment[0];
 					
 				} else {
 					
-					double projectionOntoLine = Vector.scalarProduct(Vector.subtract(this.currentPosition, this.goal[0]), Vector.subtract(this.goal[1], this.goal[0])) / goalLengthSquared;
+					double projectionOntoLine = Vector.scalarProduct(Vector.subtract(this.currentPosition, segment[0]), Vector.subtract(segment[1], segment[0])) / goalLengthSquared;
 					
 					if (projectionOntoLine < 0.0) {
 						
-						goal = this.goal[0];
+						goal = segment[0];
 						
 					} else if (projectionOntoLine > 1.0) {
 						
-						goal = this.goal[1];
+						goal = segment[1];
 						
 					} else {
 						
-						goal = Vector.add(this.goal[0], goalSegment.multiply(projectionOntoLine));
+						goal = Vector.add(segment[0], goalSegment.multiply(projectionOntoLine));
 					}
 				}
 			}
@@ -614,7 +690,7 @@ public class Boid {
 		
 		if (this.goal != null) {
 			
-			goalDirection = Vector.subtract(this.actualGoal(), this.getPosition());
+			goalDirection = Vector.subtract(this.actualPoint(this.goal), this.getPosition());
 		}
 		
 		return goalDirection.normalize().multiply(MAX_VELOCITY);

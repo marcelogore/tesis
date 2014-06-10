@@ -27,12 +27,15 @@ public class OneLaneScenario extends Scenario {
 		// Vuelen a la banda contraria
 		final Vector goalA = new Vector(this.getSceneSize().x, 10);
 		final Vector goalB = new Vector(this.getSceneSize().x, 50);
+		final Vector checkpointA = new Vector(this.getSceneSize().x / 2, 10);
+		final Vector checkpointB = new Vector(this.getSceneSize().x / 2, 50);
 
 		for (int j = 0; j < this.getNumberOfBoids(); j++) {
 			
 			Boid boid = Boid.createRandomBoid(0, 10, 800, 40);
 			boid.setName("Boid" + j);
 			boid.setGoal(goalA, goalB);
+			boid.setCheckpoint(checkpointA, checkpointB);
 			
 			boids.add(boid);
 			boid.setOtherBoids(boids);
@@ -42,7 +45,7 @@ public class OneLaneScenario extends Scenario {
 
 			representedBoids.add(new CircularBoid(boid));
 		}
-
+		
 		List<CircularBoid> obstacles = new LinkedList<CircularBoid>();
 		
 		// Ancho inicial
