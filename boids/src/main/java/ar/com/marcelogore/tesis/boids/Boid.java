@@ -693,7 +693,7 @@ public class Boid {
 			goalDirection = Vector.subtract(this.actualPoint(this.goal), this.getPosition());
 		}
 		
-		return goalDirection.normalize().multiply(MAX_VELOCITY);
+		return goalDirection.normalize();
 	}
 	
 }
