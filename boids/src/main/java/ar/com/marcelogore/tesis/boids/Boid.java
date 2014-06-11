@@ -463,7 +463,7 @@ public class Boid {
 			Vector velocityShiftDueToRule1 = this.moveTowardsPercievedMassCenter();
 			Vector velocityShiftDueToRule2 = this.keepDistanceFromSurroundingObjects().multiply(2);
 			Vector velocityShiftDueToRule3 = this.matchOtherBoidsVelocity();
-			Vector velocityShiftDueToRule4 = this.moveTowardsGoal().multiply(MAX_VELOCITY);
+			Vector velocityShiftDueToRule4 = this.moveTowardsGoal();
 			
 			Vector finalVelocity = this.limitVelocity(Vector.add(
 					this.getVelocity(),
