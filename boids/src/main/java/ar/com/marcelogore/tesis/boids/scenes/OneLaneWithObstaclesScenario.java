@@ -25,14 +25,17 @@ public class OneLaneWithObstaclesScenario extends Scenario {
 		List<Boid> boids = new ArrayList<Boid>();
 		
 		// Vuelen a la banda contraria
-		final Vector goalA = new Vector(this.getSceneSize().x, 10);
-		final Vector goalB = new Vector(this.getSceneSize().x, 50);
+		final Vector goalA = new Vector(this.getSceneSize().x, 80);
+		final Vector goalB = new Vector(this.getSceneSize().x, 120);
+		final Vector checkpointA = new Vector(this.getSceneSize().x / 2, 80);
+		final Vector checkpointB = new Vector(this.getSceneSize().x / 2, 120);
 
 		for (int j = 0; j < this.getNumberOfBoids(); j++) {
 			
-			Boid boid = Boid.createRandomBoid(0, 10, 800, 40);
+			Boid boid = Boid.createRandomBoid(0, 80, 800, 40);
 			boid.setName("Boid" + j);
 			boid.setGoal(goalA, goalB);
+			boid.setCheckpoint(checkpointA, checkpointB);
 			
 			boids.add(boid);
 			boid.setOtherBoids(boids);
@@ -46,16 +49,16 @@ public class OneLaneWithObstaclesScenario extends Scenario {
 		List<CircularBoid> obstacles = new LinkedList<CircularBoid>();
 		
 		// Ancho inicial
-		ScenaryCreator.drawLine(obstacles, new Vector(0,5), new Vector(800,5));
-		ScenaryCreator.drawLine(obstacles, new Vector(0,55), new Vector(800,55));
+		ScenaryCreator.drawLine(obstacles, new Vector(0,75), new Vector(800,75));
+		ScenaryCreator.drawLine(obstacles, new Vector(0,125), new Vector(800,125));
 
-		obstacles.add(new CircularBoid(new Boid(new Vector(400,40), true), Color.BLACK));
-		obstacles.add(new CircularBoid(new Boid(new Vector(400,45), true), Color.BLACK));
-		obstacles.add(new CircularBoid(new Boid(new Vector(400,50), true), Color.BLACK));
+		obstacles.add(new CircularBoid(new Boid(new Vector(400,110), true), Color.BLACK));
+		obstacles.add(new CircularBoid(new Boid(new Vector(400,115), true), Color.BLACK));
+		obstacles.add(new CircularBoid(new Boid(new Vector(400,120), true), Color.BLACK));
 		
-		obstacles.add(new CircularBoid(new Boid(new Vector(800,10), true), Color.BLACK));
-		obstacles.add(new CircularBoid(new Boid(new Vector(800,15), true), Color.BLACK));
-		obstacles.add(new CircularBoid(new Boid(new Vector(800,20), true), Color.BLACK));
+		obstacles.add(new CircularBoid(new Boid(new Vector(800,80), true), Color.BLACK));
+		obstacles.add(new CircularBoid(new Boid(new Vector(800,85), true), Color.BLACK));
+		obstacles.add(new CircularBoid(new Boid(new Vector(800,90), true), Color.BLACK));
 		
 		representedBoids.addAll(obstacles);
 		for (CircularBoid cBoid : obstacles) {
@@ -69,7 +72,7 @@ public class OneLaneWithObstaclesScenario extends Scenario {
 
 	@Override
 	public Vector getSceneSize() {
-		return new Vector(800,60);
+		return new Vector(800,200);
 	}
 
 }

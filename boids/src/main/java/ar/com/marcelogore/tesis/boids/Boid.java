@@ -135,38 +135,7 @@ public class Boid {
 	 */
 	public void setGoal(Vector... goal) {
 
-		if ((goal.length > 2) || (goal.length == 2 && (goal[0] == null || goal[1] == null))) {
-			
-			throw new IllegalArgumentException("The goal can either be null, a point (one non-null Vector) or a segment (a pair of non-null Vectors)");
-		}
-		
-		if ((goal == null) || (goal.length == 1 && goal[0] == null) || (goal.length == 2 && goal[1] == null)) {
-			
-			this.goal = null;
-		
-		} else {
-			
-			if (this.goal == null) {
-				
-				this.goal = new Vector[2];
-			}
-
-			if (goal[0] != null) {
-				
-				this.goal[0] = goal[0];
-			}
-			
-			if (goal.length == 2) {
-				
-				this.goal[1] = goal[1];
-				
-				if (goal[0] == null) {
-					
-					this.goal[0] = goal[1];
-				}
-			}
-		}
-		
+		this.goal = this.setSegment(this.goal, goal);
 	}
 	
 	public Vector[] getCheckpoint() {
@@ -175,39 +144,46 @@ public class Boid {
 	
 	public void setCheckpoint(Vector... checkpoint) {
 
-		if ((checkpoint.length > 2) || (checkpoint.length == 2 && (checkpoint[0] == null || checkpoint[1] == null))) {
+		this.checkpoint = this.setSegment(this.checkpoint, checkpoint);
+	}
+
+	private Vector[] setSegment(Vector[] where, Vector... vectors) {
+		
+		if ((vectors.length > 2) || (vectors.length == 2 && (vectors[0] == null || vectors[1] == null))) {
 			
 			throw new IllegalArgumentException("The goal can either be null, a point (one non-null Vector) or a segment (a pair of non-null Vectors)");
 		}
 		
-		if ((checkpoint == null) || (checkpoint.length == 1 && checkpoint[0] == null) || (checkpoint.length == 2 && checkpoint[1] == null)) {
+		if ((vectors == null) || (vectors.length == 1 && vectors[0] == null) || (vectors.length == 2 && vectors[1] == null)) {
 			
-			this.checkpoint = null;
+			where = null;
 		
 		} else {
 			
-			if (this.checkpoint == null) {
+			if (where == null) {
 				
-				this.checkpoint = new Vector[2];
+				where = new Vector[2];
 			}
 
-			if (checkpoint[0] != null) {
+			if (vectors[0] != null) {
 				
-				this.checkpoint[0] = checkpoint[0];
+				where[0] = vectors[0];
 			}
 			
-			if (checkpoint.length == 2) {
+			if (vectors.length == 2) {
 				
-				this.checkpoint[1] = checkpoint[1];
+				where[1] = vectors[1];
 				
-				if (checkpoint[0] == null) {
+				if (vectors[0] == null) {
 					
-					this.checkpoint[0] = checkpoint[1];
+					where[0] = vectors[1];
 				}
 			}
 		}
+		
+		return where;
 	}
-
+	
 	/*
 	 * The boid's "viewing" angle, in radians, counted simultaneously clockwise 
 	 * and counter clockwise from the direction of the boid's velocity vector
@@ -282,7 +258,7 @@ public class Boid {
 				} else {
 					
 					Vector velocityVector = this.getVelocity();
-					Vector distanceVector = Vector.subtractInToroid(boid.getPosition(), this.getPosition());
+					Vector distanceVector = Vector.subtract(boid.getPosition(), this.getPosition());
 					
 					double cosine = ((distanceVector.x * velocityVector.x) + (distanceVector.y * velocityVector.y)) / 
 							(distanceVector.length() * velocityVector.length());
@@ -330,7 +306,7 @@ public class Boid {
 		Vector distance = new Vector();
 		distance.copy(this.getPosition());
 		
-		return Vector.subtractInToroid(distance, other.getPosition()).length();
+		return Vector.subtractInToroid(distance, other.getPosition(), this.getMaxX(), this.getMaxY()).length();
 	}
 	
 	private void updatePosition() {
@@ -487,7 +463,7 @@ public class Boid {
 			Vector velocityShiftDueToRule1 = this.moveTowardsPercievedMassCenter();
 			Vector velocityShiftDueToRule2 = this.keepDistanceFromSurroundingObjects().multiply(2);
 			Vector velocityShiftDueToRule3 = this.matchOtherBoidsVelocity();
-			Vector velocityShiftDueToRule4 = this.moveTowardsGoal();
+			Vector velocityShiftDueToRule4 = this.moveTowardsGoal().multiply(MAX_VELOCITY);
 			
 			Vector finalVelocity = this.limitVelocity(Vector.add(
 					this.getVelocity(),
@@ -632,7 +608,7 @@ public class Boid {
 			}
 			
 			centerOfMass.divide(this.nearbyBoids.size());
-			velocityShift = Vector.subtractInToroid(centerOfMass, this.getPosition());
+			velocityShift = Vector.subtractInToroid(centerOfMass, this.getPosition(), this.getMaxX(), this.getMaxY());
 		}
 
 		return velocityShift.normalize();
@@ -649,7 +625,7 @@ public class Boid {
 		
 		for (Boid nearbyBoid : nearbyBoidsAndObstacles) {
 			
-			Vector distanceVector = Vector.subtractInToroid(nearbyBoid.getPosition(), this.getPosition());
+			Vector distanceVector = Vector.subtractInToroid(nearbyBoid.getPosition(), this.getPosition(), this.getMaxX(), this.getMaxY());
 			double distance = distanceVector.length();
 			
 			double distanceCorrection = 0;
@@ -659,7 +635,7 @@ public class Boid {
 				distanceCorrection = Math.pow((distance - 25) / 12.0, power);
 			}
 			
-			collisionAvoidance = Vector.subtractInToroid(collisionAvoidance, distanceVector.normalize().multiply(distanceCorrection));
+			collisionAvoidance = Vector.subtractInToroid(collisionAvoidance, distanceVector.normalize().multiply(distanceCorrection), this.getMaxX(), this.getMaxY());
 		}
 		
 		return collisionAvoidance;
@@ -678,7 +654,7 @@ public class Boid {
 			}
 			
 			othersVelocity.divide(this.nearbyBoids.size());
-			velocityShift = Vector.subtractInToroid(othersVelocity, this.getVelocity());
+			velocityShift = Vector.subtractInToroid(othersVelocity, this.getVelocity(), this.getMaxX(), this.getMaxY());
 		}
 
 		return velocityShift.normalize();

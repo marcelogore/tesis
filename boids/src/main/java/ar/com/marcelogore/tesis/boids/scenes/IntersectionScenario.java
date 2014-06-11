@@ -29,12 +29,18 @@ public class IntersectionScenario extends Scenario {
 		final Vector goal2a = new Vector(180,400);
 		final Vector goal2b = new Vector(220,400);
 		
+		final Vector checkpoint1a = new Vector(225,180);
+		final Vector checkpoint1b = new Vector(225,220);
+		final Vector checkpoint2a = new Vector(180,225);
+		final Vector checkpoint2b = new Vector(220,225);
+
 		// Southbound boids
 		for (int i = 0; i < this.getNumberOfBoids(); i++) {
 			
 			Boid boid = Boid.createRandomBoid(180, 0, 40, 400);
 			boid.setName("SB-Boid" + i);
 			boid.setGoal(goal2a, goal2b);
+			boid.setCheckpoint(checkpoint2a, checkpoint2b);
 
 			boids.add(boid);
 			boid.setOtherBoids(boids);
@@ -51,6 +57,7 @@ public class IntersectionScenario extends Scenario {
 			Boid boid = Boid.createRandomBoid(0, 180, 400, 40);
 			boid.setName("WB-Boid" + i);
 			boid.setGoal(goal1a, goal1b);
+			boid.setCheckpoint(checkpoint1a, checkpoint1b);
 
 			boids.add(boid);
 			boid.setOtherBoids(boids);

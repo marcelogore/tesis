@@ -110,7 +110,7 @@ public class VectorTest {
 		Vector a = new Vector(400,100);
 		Vector b = new Vector(300,100);
 		
-		Vector x = Vector.subtractInToroid(a, b);
+		Vector x = Vector.subtractInToroid(a, b, 800, 200);
 		
 		assertEquals(100, x.x, 0.001);
 		assertEquals(0, x.y, 0.001);
@@ -122,7 +122,7 @@ public class VectorTest {
 		Vector a = new Vector(400,100);
 		Vector b = new Vector(300,100);
 		
-		Vector x = Vector.subtractInToroid(b, a);
+		Vector x = Vector.subtractInToroid(b, a, 800, 200);
 		
 		assertEquals(-100, x.x, 0.001);
 		assertEquals(0, x.y, 0.001);
@@ -134,7 +134,7 @@ public class VectorTest {
 		Vector c = new Vector(800,100);
 		Vector b = new Vector(300,100);
 		
-		Vector x = Vector.subtractInToroid(c, b);
+		Vector x = Vector.subtractInToroid(c, b, 800, 200);
 		
 		assertEquals(-300, x.x, 0.001);
 		assertEquals(0, x.y, 0.001);
@@ -146,7 +146,7 @@ public class VectorTest {
 		Vector c = new Vector(800,100);
 		Vector b = new Vector(300,100);
 		
-		Vector x = Vector.subtractInToroid(b, c);
+		Vector x = Vector.subtractInToroid(b, c, 800, 200);
 		
 		assertEquals(300, x.x, 0.001);
 		assertEquals(0, x.y, 0.001);
@@ -158,7 +158,7 @@ public class VectorTest {
 		Vector d = new Vector(550,0);
 		Vector e = new Vector(550,200);
 		
-		Vector x = Vector.subtractInToroid(d, e);
+		Vector x = Vector.subtractInToroid(d, e, 800, 200);
 		
 		assertEquals(0, x.x, 0.001);
 		assertEquals(0, x.y, 0.001);
@@ -170,7 +170,7 @@ public class VectorTest {
 		Vector d = new Vector(550,0);
 		Vector e = new Vector(550,200);
 		
-		Vector x = Vector.subtractInToroid(e, d);
+		Vector x = Vector.subtractInToroid(e, d, 800, 200);
 		
 		assertEquals(0, x.x, 0.001);
 		assertEquals(0, x.y, 0.001);
@@ -182,7 +182,7 @@ public class VectorTest {
 		Vector d = new Vector(550,0);
 		Vector f = new Vector(550,150);
 		
-		Vector x = Vector.subtractInToroid(d, f);
+		Vector x = Vector.subtractInToroid(d, f, 800, 200);
 		
 		assertEquals(0, x.x, 0.001);
 		assertEquals(50, x.y, 0.001);
@@ -194,7 +194,7 @@ public class VectorTest {
 		Vector d = new Vector(550,0);
 		Vector f = new Vector(550,150);
 		
-		Vector x = Vector.subtractInToroid(f, d);
+		Vector x = Vector.subtractInToroid(f, d, 800, 200);
 		
 		assertEquals(0, x.x, 0.001);
 		assertEquals(-50, x.y, 0.001);
@@ -206,7 +206,7 @@ public class VectorTest {
 		Vector g = new Vector(50,100);
 		Vector f = new Vector(550,150);
 		
-		Vector x = Vector.subtractInToroid(g, f);
+		Vector x = Vector.subtractInToroid(g, f, 800, 200);
 		
 		assertEquals(300, x.x, 0.001);
 		assertEquals(-50, x.y, 0.001);

@@ -5,9 +5,6 @@ public class Vector {
 	public double x;
 	public double y;
 	
-	private static int maxX = 800;
-	private static int maxY = 200;
-	
 	public Vector() {}
 	
 	public Vector(double x, double y) {
@@ -43,7 +40,7 @@ public class Vector {
 		return result;
 	}
 	
-	public static Vector subtractInToroid(Vector a, Vector b) {
+	public static Vector subtractInToroid(Vector a, Vector b, int maxX, int maxY) {
 
 		Vector result = new Vector();
 		double cx = a.x - b.x;
