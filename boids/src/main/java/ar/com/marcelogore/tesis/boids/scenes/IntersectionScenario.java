@@ -73,13 +73,13 @@ public class IntersectionScenario extends Scenario {
 		ScenaryCreator.drawLine(obstacles, new Vector(175,175), new Vector(175,0));
 
 		ScenaryCreator.drawLine(obstacles, new Vector(225,0), new Vector(225,175));
-		ScenaryCreator.drawLine(obstacles, new Vector(225,175), new Vector(800,175));
+		ScenaryCreator.drawLine(obstacles, new Vector(225,175), new Vector(400,175));
 		
 		ScenaryCreator.drawLine(obstacles, new Vector(0,225), new Vector(175,225));
-		ScenaryCreator.drawLine(obstacles, new Vector(175,225), new Vector(175,800));
+		ScenaryCreator.drawLine(obstacles, new Vector(175,225), new Vector(175,400));
 
-		ScenaryCreator.drawLine(obstacles, new Vector(225,800), new Vector(225,225));
-		ScenaryCreator.drawLine(obstacles, new Vector(225,225), new Vector(800,225));
+		ScenaryCreator.drawLine(obstacles, new Vector(225,400), new Vector(225,225));
+		ScenaryCreator.drawLine(obstacles, new Vector(225,225), new Vector(400,225));
 
 		representedBoids.addAll(obstacles);
 		for (CircularBoid cBoid : obstacles) {

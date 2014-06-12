@@ -258,7 +258,7 @@ public class Boid {
 				} else {
 					
 					Vector velocityVector = this.getVelocity();
-					Vector distanceVector = Vector.subtract(boid.getPosition(), this.getPosition());
+					Vector distanceVector = Vector.subtractInToroid(boid.getPosition(), this.getPosition(), this.getMaxX(), this.getMaxY());
 					
 					double cosine = ((distanceVector.x * velocityVector.x) + (distanceVector.y * velocityVector.y)) / 
 							(distanceVector.length() * velocityVector.length());
