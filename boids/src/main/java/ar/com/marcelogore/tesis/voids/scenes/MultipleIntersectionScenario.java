@@ -1,4 +1,4 @@
-package ar.com.marcelogore.tesis.boids.scenes;
+package ar.com.marcelogore.tesis.voids.scenes;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -12,10 +12,10 @@ import javafx.scene.shape.Circle;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import ar.com.marcelogore.tesis.boids.Boid;
-import ar.com.marcelogore.tesis.boids.CircularBoid;
-import ar.com.marcelogore.tesis.boids.util.ScenaryCreator;
-import ar.com.marcelogore.tesis.boids.util.Vector;
+import ar.com.marcelogore.tesis.voids.CircularVoid;
+import ar.com.marcelogore.tesis.voids.Void;
+import ar.com.marcelogore.tesis.voids.util.ScenaryCreator;
+import ar.com.marcelogore.tesis.voids.util.Vector;
 
 public class MultipleIntersectionScenario extends Scenario {
 
@@ -24,7 +24,7 @@ public class MultipleIntersectionScenario extends Scenario {
 	@Override
 	public Scene createScene() {
 
-		List<Boid> boids = new ArrayList<Boid>();
+		List<Void> voids = new ArrayList<Void>();
 		
 		final Vector goal1 = new Vector(265,820);
 		final Vector goal2 = new Vector(555,0);
@@ -33,127 +33,127 @@ public class MultipleIntersectionScenario extends Scenario {
 		final Vector goal5 = new Vector(1400,265);
 		final Vector goal6 = new Vector(0,555);
 		
-		// West southbound boids
+		// West southbound voids
 		for (int i = 0; i < 10; i++) {
 			
 			for (int j = 0; j < 3; j++) {
 				
-				Boid boid = new Boid(new Vector(240 + 14 + 14 * j, 0 + 14 + 14 * i), new Vector());
-				boid.setName("WSB-Boid" + i + j);
+				Void boid = new Void(new Vector(240 + 14 + 14 * j, 0 + 14 + 14 * i), new Vector());
+				boid.setName("WSB-Void" + i + j);
 				boid.setGoal(goal1);
 				
-				boids.add(boid);
-				boid.setOtherBoids(boids);
+				voids.add(boid);
+				boid.setOtherVoids(voids);
 				
 				boid.setMaxX((int) getSceneSize().x);
 				boid.setMaxY((int) getSceneSize().y);
 				
-				representedBoids.add(new CircularBoid(boid, Color.RED));
-				log.debug("New boid " + boid);
+				representedVoids.add(new CircularVoid(boid, Color.RED));
+				log.debug("New void " + boid);
 			}
 		}
 
-		// Middle-west northbound boids
+		// Middle-west northbound voids
 		for (int i = 0; i < 10; i++) {
 			
 			for (int j = 0; j < 3; j++) {
 				
-				Boid boid = new Boid(new Vector(530 + 14 + 14 * j, 820 - 14 - 14 * i), new Vector());
-				boid.setName("MWSB-Boid" + i + j);
+				Void boid = new Void(new Vector(530 + 14 + 14 * j, 820 - 14 - 14 * i), new Vector());
+				boid.setName("MWSB-Void" + i + j);
 				boid.setGoal(goal2);
 				
-				boids.add(boid);
-				boid.setOtherBoids(boids);
+				voids.add(boid);
+				boid.setOtherVoids(voids);
 				
 				boid.setMaxX((int) getSceneSize().x);
 				boid.setMaxY((int) getSceneSize().y);
 				
-				representedBoids.add(new CircularBoid(boid, Color.ORANGE));
-				log.debug("New boid " + boid);
+				representedVoids.add(new CircularVoid(boid, Color.ORANGE));
+				log.debug("New void " + boid);
 			}
 		}
 
-		// Middle-east southbound boids
+		// Middle-east southbound voids
 		for (int i = 0; i < 10; i++) {
 			
 			for (int j = 0; j < 3; j++) {
 				
-				Boid boid = new Boid(new Vector(820 + 14 + 14 * j, 0 + 14 + 14 * i), new Vector());
-				boid.setName("MESB-Boid" + i + j);
+				Void boid = new Void(new Vector(820 + 14 + 14 * j, 0 + 14 + 14 * i), new Vector());
+				boid.setName("MESB-Void" + i + j);
 				boid.setGoal(goal3);
 				
-				boids.add(boid);
-				boid.setOtherBoids(boids);
+				voids.add(boid);
+				boid.setOtherVoids(voids);
 				
 				boid.setMaxX((int) getSceneSize().x);
 				boid.setMaxY((int) getSceneSize().y);
 				
-				representedBoids.add(new CircularBoid(boid, Color.BROWN));
-				log.debug("New boid " + boid);
+				representedVoids.add(new CircularVoid(boid, Color.BROWN));
+				log.debug("New void " + boid);
 			}
 		}
 
-		// East northbound boids
+		// East northbound voids
 		for (int i = 0; i < 10; i++) {
 			
 			for (int j = 0; j < 3; j++) {
 				
-				Boid boid = new Boid(new Vector(1110 + 14 + 14 * j, 820 - 14 - 14 * i), new Vector());
-				boid.setName("ESB-Boid" + i + j);
+				Void boid = new Void(new Vector(1110 + 14 + 14 * j, 820 - 14 - 14 * i), new Vector());
+				boid.setName("ESB-Void" + i + j);
 				boid.setGoal(goal4);
 				
-				boids.add(boid);
-				boid.setOtherBoids(boids);
+				voids.add(boid);
+				boid.setOtherVoids(voids);
 				
 				boid.setMaxX((int) getSceneSize().x);
 				boid.setMaxY((int) getSceneSize().y);
 				
-				representedBoids.add(new CircularBoid(boid, Color.CORAL));
-				log.debug("New boid " + boid);
+				representedVoids.add(new CircularVoid(boid, Color.CORAL));
+				log.debug("New void " + boid);
 			}
 		}
 
-		// North eastbound boids
+		// North eastbound voids
 		for (int i = 0; i < 3; i++) {
 			
 			for (int j = 0; j < 10; j++) {
 				
-				Boid boid = new Boid(new Vector(0 + 14 + 14 * j, 240 + 14 + 14 * i), new Vector());
-				boid.setName("NEB-Boid" + i + j);
+				Void boid = new Void(new Vector(0 + 14 + 14 * j, 240 + 14 + 14 * i), new Vector());
+				boid.setName("NEB-Void" + i + j);
 				boid.setGoal(goal5);
 				
-				boids.add(boid);
-				boid.setOtherBoids(boids);
+				voids.add(boid);
+				boid.setOtherVoids(voids);
 				
 				boid.setMaxX((int) getSceneSize().x);
 				boid.setMaxY((int) getSceneSize().y);
 
-				representedBoids.add(new CircularBoid(boid, Color.BLUE));
-				log.debug("New boid " + boid);
+				representedVoids.add(new CircularVoid(boid, Color.BLUE));
+				log.debug("New void " + boid);
 			}
 		}
 
-		// South westbound boids
+		// South westbound voids
 		for (int i = 0; i < 3; i++) {
 			
 			for (int j = 0; j < 10; j++) {
 				
-				Boid boid = new Boid(new Vector(1400 - 14 - 14 * j, 530 + 14 + 14 * i), new Vector());
-				boid.setName("SEB-Boid" + i + j);
+				Void boid = new Void(new Vector(1400 - 14 - 14 * j, 530 + 14 + 14 * i), new Vector());
+				boid.setName("SEB-Void" + i + j);
 				boid.setGoal(goal6);
 				
-				boids.add(boid);
-				boid.setOtherBoids(boids);
+				voids.add(boid);
+				boid.setOtherVoids(voids);
 				
 				boid.setMaxX((int) getSceneSize().x);
 				boid.setMaxY((int) getSceneSize().y);
 
-				representedBoids.add(new CircularBoid(boid, Color.LIGHTBLUE));
-				log.debug("New boid " + boid);
+				representedVoids.add(new CircularVoid(boid, Color.LIGHTBLUE));
+				log.debug("New void " + boid);
 			}
 		}
 
-		List<CircularBoid> obstacles = new LinkedList<CircularBoid>();
+		List<CircularVoid> obstacles = new LinkedList<CircularVoid>();
 
 		ScenaryCreator.drawRectangle(obstacles, new Vector(0,0), new Vector(240,240));
 		ScenaryCreator.drawRectangle(obstacles, new Vector(290,0), new Vector(530,240));
@@ -173,12 +173,12 @@ public class MultipleIntersectionScenario extends Scenario {
 		ScenaryCreator.drawRectangle(obstacles, new Vector(870,580), new Vector(1110,820));
 		ScenaryCreator.drawRectangle(obstacles, new Vector(1160,580), new Vector(1400,820));
 
-		representedBoids.addAll(obstacles);
-		for (CircularBoid cBoid : obstacles) {
-			boids.add(cBoid.getBoid());
+		representedVoids.addAll(obstacles);
+		for (CircularVoid cVoid : obstacles) {
+			voids.add(cVoid.getVoid());
 		}
 		
-		final Group group = new Group(representedBoids.toArray(new Circle[0]));
+		final Group group = new Group(representedVoids.toArray(new Circle[0]));
 
 		return new Scene(group, getSceneSize().x, getSceneSize().y, Color.WHITE);
 

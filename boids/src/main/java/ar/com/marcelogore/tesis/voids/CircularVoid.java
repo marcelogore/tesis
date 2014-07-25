@@ -1,26 +1,26 @@
-package ar.com.marcelogore.tesis.boids;
+package ar.com.marcelogore.tesis.voids;
 
 import java.util.Random;
 
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
-public class CircularBoid extends Circle {
+public class CircularVoid extends Circle {
 
 	private static final double SIZE = 5;
  	
-	private Boid boid;
+	private Void boid;
 
-	public CircularBoid(Boid boid) {
+	public CircularVoid(Void boid) {
 		this(boid, randomColor());
 	}
 	
-	public CircularBoid(Boid boid, Color color) {
+	public CircularVoid(Void boid, Color color) {
 		super(boid.getPosition().x, boid.getPosition().y, SIZE, color);
 		this.boid = boid;
 	}
 	
-	public Boid getBoid() {
+	public Void getVoid() {
 		return boid;
 	}
 

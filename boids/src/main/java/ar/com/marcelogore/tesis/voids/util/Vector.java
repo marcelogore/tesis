@@ -1,4 +1,4 @@
-package ar.com.marcelogore.tesis.boids.util;
+package ar.com.marcelogore.tesis.voids.util;
 
 public class Vector {
 	

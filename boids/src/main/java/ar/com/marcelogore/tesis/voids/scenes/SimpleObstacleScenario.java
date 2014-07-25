@@ -1,4 +1,4 @@
-package ar.com.marcelogore.tesis.boids.scenes;
+package ar.com.marcelogore.tesis.voids.scenes;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -8,25 +8,25 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import ar.com.marcelogore.tesis.boids.Boid;
-import ar.com.marcelogore.tesis.boids.CircularBoid;
-import ar.com.marcelogore.tesis.boids.util.ScenaryCreator;
-import ar.com.marcelogore.tesis.boids.util.Vector;
+import ar.com.marcelogore.tesis.voids.CircularVoid;
+import ar.com.marcelogore.tesis.voids.Void;
+import ar.com.marcelogore.tesis.voids.util.ScenaryCreator;
+import ar.com.marcelogore.tesis.voids.util.Vector;
 
 public class SimpleObstacleScenario extends Scenario {
 
 	@Override
 	public Scene createScene() {
 		
-		List<Boid> boids = new ArrayList<Boid>();
+		List<Void> voids = new ArrayList<Void>();
 		
 		final Vector goalA = new Vector(301,140);
 		final Vector goalB = new Vector(301,160);
 		
 		for (int i = 0; i < 50; i++) {
 			
-			Boid boid = Boid.createRandomBoid(Math.round(getSceneSize().x), Math.round(getSceneSize().y));
-			boid.setName("Boid" + i);
+			Void boid = Void.createRandomVoid(Math.round(getSceneSize().x), Math.round(getSceneSize().y));
+			boid.setName("Void" + i);
 			
 			// Debug the first boid's behavior
 			if (i == 0) {
@@ -38,23 +38,23 @@ public class SimpleObstacleScenario extends Scenario {
 			boid.setMaxX((int) getSceneSize().x);
 			boid.setMaxY((int) getSceneSize().y);
 
-			boids.add(boid);
-			boid.setOtherBoids(boids);
+			voids.add(boid);
+			boid.setOtherVoids(voids);
 
-			representedBoids.add(new CircularBoid(boid));
+			representedVoids.add(new CircularVoid(boid));
 		}
 
 		// Obstacles
-		List<CircularBoid> obstacles = new LinkedList<CircularBoid>();
+		List<CircularVoid> obstacles = new LinkedList<CircularVoid>();
 		ScenaryCreator.drawLine(obstacles, new Vector(200,100), new Vector(150,150));
 		ScenaryCreator.drawLine(obstacles, new Vector(150,150), new Vector(200,200));
-		representedBoids.addAll(obstacles);
+		representedVoids.addAll(obstacles);
 		
-		for (CircularBoid cBoid : obstacles) {
-			boids.add(cBoid.getBoid());
+		for (CircularVoid cVoid : obstacles) {
+			voids.add(cVoid.getVoid());
 		}
 		
-		final Group group = new Group(representedBoids.toArray(new Circle[0]));
+		final Group group = new Group(representedVoids.toArray(new Circle[0]));
 
 		return new Scene(group, getSceneSize().x, getSceneSize().y, Color.WHITE);
 	}

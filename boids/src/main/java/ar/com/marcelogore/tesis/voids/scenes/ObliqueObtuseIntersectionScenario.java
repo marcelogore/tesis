@@ -1,4 +1,4 @@
-package ar.com.marcelogore.tesis.boids.scenes;
+package ar.com.marcelogore.tesis.voids.scenes;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -7,10 +7,10 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import ar.com.marcelogore.tesis.boids.Boid;
-import ar.com.marcelogore.tesis.boids.CircularBoid;
-import ar.com.marcelogore.tesis.boids.util.ScenaryCreator;
-import ar.com.marcelogore.tesis.boids.util.Vector;
+import ar.com.marcelogore.tesis.voids.CircularVoid;
+import ar.com.marcelogore.tesis.voids.Void;
+import ar.com.marcelogore.tesis.voids.util.ScenaryCreator;
+import ar.com.marcelogore.tesis.voids.util.Vector;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.paint.Color;
@@ -23,7 +23,7 @@ public class ObliqueObtuseIntersectionScenario extends Scenario {
 	@Override
 	public Scene createScene() {
 
-		List<Boid> boids = new ArrayList<Boid>();
+		List<Void> voids = new ArrayList<Void>();
 		
 		final Vector goal1 = new Vector(800,575);
 		final Vector goal2 = new Vector(0,575);
@@ -33,18 +33,18 @@ public class ObliqueObtuseIntersectionScenario extends Scenario {
 			
 			for (int j = 0; j < 3; j++) {
 				
-				Boid boid = new Boid(new Vector(10, 225), new Vector());
-				boid.setName("SB-Boid" + i + j);
+				Void boid = new Void(new Vector(10, 225), new Vector());
+				boid.setName("SB-Void" + i + j);
 				boid.setGoal(goal1);
 				
-				boids.add(boid);
-				boid.setOtherBoids(boids);
+				voids.add(boid);
+				boid.setOtherVoids(voids);
 				
 				boid.setMaxX((int) getSceneSize().x);
 				boid.setMaxY((int) getSceneSize().y);
 				
-				representedBoids.add(new CircularBoid(boid, Color.RED));
-				log.debug("New boid " + boid);
+				representedVoids.add(new CircularVoid(boid, Color.RED));
+				log.debug("New void " + boid);
 			}
 		}
 
@@ -53,22 +53,22 @@ public class ObliqueObtuseIntersectionScenario extends Scenario {
 			
 			for (int j = 0; j < 10; j++) {
 				
-				Boid boid = new Boid(new Vector(790, 225), new Vector());
-				boid.setName("WB-Boid" + i + j);
+				Void boid = new Void(new Vector(790, 225), new Vector());
+				boid.setName("WB-Void" + i + j);
 				boid.setGoal(goal2);
 				
-				boids.add(boid);
-				boid.setOtherBoids(boids);
+				voids.add(boid);
+				boid.setOtherVoids(voids);
 				
 				boid.setMaxX((int) getSceneSize().x);
 				boid.setMaxY((int) getSceneSize().y);
 
-				representedBoids.add(new CircularBoid(boid, Color.BLUE));
-				log.debug("New boid " + boid);
+				representedVoids.add(new CircularVoid(boid, Color.BLUE));
+				log.debug("New void " + boid);
 			}
 		}
 
-		List<CircularBoid> obstacles = new LinkedList<CircularBoid>();
+		List<CircularVoid> obstacles = new LinkedList<CircularVoid>();
 		ScenaryCreator.drawLine(obstacles, new Vector(0,200), new Vector(400,375));
 		ScenaryCreator.drawLine(obstacles, new Vector(400,375), new Vector(800,200));
 
@@ -81,12 +81,12 @@ public class ObliqueObtuseIntersectionScenario extends Scenario {
 		ScenaryCreator.drawLine(obstacles, new Vector(0,600), new Vector(400,425));
 		ScenaryCreator.drawLine(obstacles, new Vector(400,425), new Vector(800,600));
 
-		representedBoids.addAll(obstacles);
-		for (CircularBoid cBoid : obstacles) {
-			boids.add(cBoid.getBoid());
+		representedVoids.addAll(obstacles);
+		for (CircularVoid cVoid : obstacles) {
+			voids.add(cVoid.getVoid());
 		}
 		
-		final Group group = new Group(representedBoids.toArray(new Circle[0]));
+		final Group group = new Group(representedVoids.toArray(new Circle[0]));
 
 		return new Scene(group, getSceneSize().x, getSceneSize().y, Color.WHITE);
 
