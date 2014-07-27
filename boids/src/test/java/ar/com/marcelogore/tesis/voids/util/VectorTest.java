@@ -1,7 +1,8 @@
-package ar.com.marcelogore.tesis.boids.util;
+package ar.com.marcelogore.tesis.voids.util;
 
 import org.junit.Test;
 
+import ar.com.marcelogore.tesis.voids.util.Vector;
 import static org.junit.Assert.*;
 
 public class VectorTest {

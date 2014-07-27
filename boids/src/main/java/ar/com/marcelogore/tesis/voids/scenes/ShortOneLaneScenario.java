@@ -1,4 +1,4 @@
-package ar.com.marcelogore.tesis.boids.scenes;
+package ar.com.marcelogore.tesis.voids.scenes;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -8,53 +8,53 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import ar.com.marcelogore.tesis.boids.Boid;
-import ar.com.marcelogore.tesis.boids.CircularBoid;
-import ar.com.marcelogore.tesis.boids.util.ScenaryCreator;
-import ar.com.marcelogore.tesis.boids.util.Vector;
+import ar.com.marcelogore.tesis.voids.CircularVoid;
+import ar.com.marcelogore.tesis.voids.Void;
+import ar.com.marcelogore.tesis.voids.util.ScenaryCreator;
+import ar.com.marcelogore.tesis.voids.util.Vector;
 
 public class ShortOneLaneScenario extends Scenario {
 
-	public ShortOneLaneScenario(Integer numberOfBoids) {
-		this.setNumberOfBoids(numberOfBoids);
+	public ShortOneLaneScenario(Integer numberOfVoids) {
+		this.setNumberOfVoids(numberOfVoids);
 	}
 	
 	@Override
 	public Scene createScene() {
 
-		List<Boid> boids = new ArrayList<Boid>();
+		List<Void> voids = new ArrayList<Void>();
 		
 		// Vuelen a la banda contraria
 		final Vector goalA = new Vector(this.getSceneSize().x, 10);
 		final Vector goalB = new Vector(this.getSceneSize().x, 50);
 
-		for (int j = 0; j < this.getNumberOfBoids(); j++) {
+		for (int j = 0; j < this.getNumberOfVoids(); j++) {
 			
-			Boid boid = Boid.createRandomBoid(0, 10, 100, 40);
-			boid.setName("Boid" + j);
+			Void boid = Void.createRandomVoid(0, 10, 100, 40);
+			boid.setName("Void" + j);
 			boid.setGoal(goalA, goalB);
 			
-			boids.add(boid);
-			boid.setOtherBoids(boids);
+			voids.add(boid);
+			boid.setOtherVoids(voids);
 			
 			boid.setMaxX((int) getSceneSize().x);
 			boid.setMaxY((int) getSceneSize().y);
 
-			representedBoids.add(new CircularBoid(boid));
+			representedVoids.add(new CircularVoid(boid));
 		}
 
-		List<CircularBoid> obstacles = new LinkedList<CircularBoid>();
+		List<CircularVoid> obstacles = new LinkedList<CircularVoid>();
 		
 		// Ancho inicial
 		ScenaryCreator.drawLine(obstacles, new Vector(0,5), new Vector(200,5));
 		ScenaryCreator.drawLine(obstacles, new Vector(0,55), new Vector(200,55));
 		
-		representedBoids.addAll(obstacles);
-		for (CircularBoid cBoid : obstacles) {
-			boids.add(cBoid.getBoid());
+		representedVoids.addAll(obstacles);
+		for (CircularVoid cVoid : obstacles) {
+			voids.add(cVoid.getVoid());
 		}
 		
-		final Group group = new Group(representedBoids.toArray(new Circle[0]));
+		final Group group = new Group(representedVoids.toArray(new Circle[0]));
 
 		return new Scene(group, getSceneSize().x, getSceneSize().y, Color.WHITE);
 	}

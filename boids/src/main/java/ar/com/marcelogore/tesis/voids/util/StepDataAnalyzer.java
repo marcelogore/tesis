@@ -1,40 +1,40 @@
-package ar.com.marcelogore.tesis.boids.util;
+package ar.com.marcelogore.tesis.voids.util;
 
 
 public class StepDataAnalyzer {
 
-	private int boidCount;
+	private int voidCount;
 	
 	private double absoluteVelocitiesSum;
 	private double actualVelocitiesSum;
 	
-	private int boidCollisionCount;
+	private int voidCollisionCount;
 	private int obstacleCollisionCount;
 	
 	private int goalReachedCount;
 	
-	public void addBoidAbsoluteVelocity(Vector velocity) {
+	public void addVoidAbsoluteVelocity(Vector velocity) {
 
 		this.absoluteVelocitiesSum += velocity.length();
 	}
 
-	public void addBoidActualVelocity(double velocityTowardsGoal) {
+	public void addVoidActualVelocity(double velocityTowardsGoal) {
 
 		this.actualVelocitiesSum += velocityTowardsGoal;
 	}
 
 	public double calculateAbsoluteVelocity() {
 		
-		return this.absoluteVelocitiesSum / this.boidCount; 
+		return this.absoluteVelocitiesSum / this.voidCount; 
 	}
 
 	public double calculateActualVelocity() {
 		
-		return this.actualVelocitiesSum / this.boidCount; 
+		return this.actualVelocitiesSum / this.voidCount; 
 	}
 
-	public void addBoidCollisionCount(int boidCollisionCount) {
-		this.boidCollisionCount += boidCollisionCount;
+	public void addVoidCollisionCount(int voidCollisionCount) {
+		this.voidCollisionCount += voidCollisionCount;
 	}
 	
 	public void addObstacleCollisionCount(int obstacleCollisionCount) {
@@ -43,7 +43,7 @@ public class StepDataAnalyzer {
 	
 	public double calculateCollisionCount() {
 		
-		return obstacleCollisionCount + boidCollisionCount / 2;
+		return obstacleCollisionCount + voidCollisionCount / 2;
 	}
 	
 	public void increaseGoalReachedCount() {
@@ -54,14 +54,14 @@ public class StepDataAnalyzer {
 		return this.goalReachedCount;
 	}
 	
-	public void nextBoid() {
-		this.boidCount++;
+	public void nextVoid() {
+		this.voidCount++;
 	}
 	
 	public void nextTimeStep() {
 		
-		this.boidCount = 0;
-		this.boidCollisionCount = 0;
+		this.voidCount = 0;
+		this.voidCollisionCount = 0;
 		this.obstacleCollisionCount = 0;
 		this.absoluteVelocitiesSum = 0;
 		this.actualVelocitiesSum = 0;
