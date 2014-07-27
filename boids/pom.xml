@@ -3,9 +3,9 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>ar.com.marcelogore.tesis</groupId>
-	<artifactId>boids</artifactId>
+	<artifactId>voids</artifactId>
 	<version>1.0</version>
-	<name>Boids</name>
+	<name>Voids</name>
 
 	<dependencies>
 		<dependency>
