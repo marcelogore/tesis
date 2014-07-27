@@ -15,6 +15,10 @@ public class GoalTestScenario extends Scenario {
 
 //	private static final Log log = LogFactory.getLog(GoalTestScenario.class);
 	
+	public GoalTestScenario(Integer numberOfVoids) {
+		this.setNumberOfVoids(numberOfVoids);
+	}
+	
 	@Override
 	public Scene createScene() {
 		
@@ -29,6 +33,7 @@ public class GoalTestScenario extends Scenario {
 			Void boid = new Void(new Vector(i * 100, 0), new Vector());
 			boid.setName("VoidX" + i);
 			boid.setGoal(goalA, goalB);
+			boid.setCheckpoint(goalA, goalB);
 			
 			voids.add(boid);
 			boid.setOtherVoids(voids);
@@ -41,6 +46,7 @@ public class GoalTestScenario extends Scenario {
 			Void boid = new Void(new Vector(0, i * 100), new Vector());
 			boid.setName("VoidY" + i);
 			boid.setGoal(goalA, goalB);
+			boid.setCheckpoint(goalA, goalB);
 			
 			voids.add(boid);
 			boid.setOtherVoids(voids);

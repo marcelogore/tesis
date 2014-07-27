@@ -15,8 +15,8 @@ import ar.com.marcelogore.tesis.voids.util.Vector;
 
 public class IntersectionScenario extends Scenario {
 
-	public IntersectionScenario(Integer numberOfBoids) {
-		this.setNumberOfVoids(numberOfBoids);
+	public IntersectionScenario(Integer numberOfVoids) {
+		this.setNumberOfVoids(numberOfVoids);
 	}
 	
 	@Override

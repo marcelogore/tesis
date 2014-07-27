@@ -19,6 +19,10 @@ public class IntersectionCollisionScenario extends Scenario {
 
 	private static final Log log = LogFactory.getLog(IntersectionCollisionScenario.class);
 	
+	public IntersectionCollisionScenario(Integer numberOfVoids) {
+		this.setNumberOfVoids(numberOfVoids);
+	}
+	
 	@Override
 	public Scene createScene() {
 		
@@ -31,17 +35,18 @@ public class IntersectionCollisionScenario extends Scenario {
 		
 		Void boid1 = new Void(new Vector(0,200), new Vector());
 		boid1.setName("Void1");
-		boid1.setGoal(goal1);
+		boid1.setGoal(goal1, goal1);
 		boid1.setMaxX((int) this.getSceneSize().x);
 		boid1.setMaxY((int) this.getSceneSize().y);
-		
+		boid1.setCheckpoint(goal1, goal1);
 
 		Void boid2 = new Void(new Vector(200,0), new Vector());
 		boid2.setName("Void2");
-		boid2.setGoal(goal2);
+		boid2.setGoal(goal2, goal2);
 		boid2.setMaxX((int) this.getSceneSize().x);
 		boid2.setMaxY((int) this.getSceneSize().y);
-
+		boid2.setCheckpoint(goal2, goal2);
+		
 		voids.add(boid1);
 		voids.add(boid2);
 		

@@ -21,6 +21,10 @@ public class MultipleIntersectionScenario extends Scenario {
 
 	private static final Log log = LogFactory.getLog(MultipleIntersectionScenario.class);
 	
+	public MultipleIntersectionScenario(Integer numberOfVoids) {
+		this.setNumberOfVoids(numberOfVoids);
+	}
+	
 	@Override
 	public Scene createScene() {
 
@@ -40,7 +44,8 @@ public class MultipleIntersectionScenario extends Scenario {
 				
 				Void boid = new Void(new Vector(240 + 14 + 14 * j, 0 + 14 + 14 * i), new Vector());
 				boid.setName("WSB-Void" + i + j);
-				boid.setGoal(goal1);
+				boid.setGoal(goal1, goal1);
+				boid.setCheckpoint(goal1, goal1);
 				
 				voids.add(boid);
 				boid.setOtherVoids(voids);
@@ -60,8 +65,9 @@ public class MultipleIntersectionScenario extends Scenario {
 				
 				Void boid = new Void(new Vector(530 + 14 + 14 * j, 820 - 14 - 14 * i), new Vector());
 				boid.setName("MWSB-Void" + i + j);
-				boid.setGoal(goal2);
-				
+				boid.setGoal(goal2, goal2);
+				boid.setCheckpoint(goal2, goal2);
+
 				voids.add(boid);
 				boid.setOtherVoids(voids);
 				
@@ -80,8 +86,9 @@ public class MultipleIntersectionScenario extends Scenario {
 				
 				Void boid = new Void(new Vector(820 + 14 + 14 * j, 0 + 14 + 14 * i), new Vector());
 				boid.setName("MESB-Void" + i + j);
-				boid.setGoal(goal3);
-				
+				boid.setGoal(goal3, goal3);
+				boid.setCheckpoint(goal3, goal3);
+
 				voids.add(boid);
 				boid.setOtherVoids(voids);
 				
@@ -100,8 +107,9 @@ public class MultipleIntersectionScenario extends Scenario {
 				
 				Void boid = new Void(new Vector(1110 + 14 + 14 * j, 820 - 14 - 14 * i), new Vector());
 				boid.setName("ESB-Void" + i + j);
-				boid.setGoal(goal4);
-				
+				boid.setGoal(goal4, goal4);
+				boid.setCheckpoint(goal4, goal4);
+
 				voids.add(boid);
 				boid.setOtherVoids(voids);
 				
@@ -120,8 +128,9 @@ public class MultipleIntersectionScenario extends Scenario {
 				
 				Void boid = new Void(new Vector(0 + 14 + 14 * j, 240 + 14 + 14 * i), new Vector());
 				boid.setName("NEB-Void" + i + j);
-				boid.setGoal(goal5);
-				
+				boid.setGoal(goal5, goal5);
+				boid.setCheckpoint(goal5, goal5);
+
 				voids.add(boid);
 				boid.setOtherVoids(voids);
 				
@@ -140,8 +149,9 @@ public class MultipleIntersectionScenario extends Scenario {
 				
 				Void boid = new Void(new Vector(1400 - 14 - 14 * j, 530 + 14 + 14 * i), new Vector());
 				boid.setName("SEB-Void" + i + j);
-				boid.setGoal(goal6);
-				
+				boid.setGoal(goal6, goal6);
+				boid.setCheckpoint(goal6, goal6);
+
 				voids.add(boid);
 				boid.setOtherVoids(voids);
 				

@@ -20,6 +20,10 @@ public class ObliqueObtuseIntersectionScenario extends Scenario {
 
 	private static final Log log = LogFactory.getLog(ObliqueObtuseIntersectionScenario.class);
 	
+	public ObliqueObtuseIntersectionScenario(Integer numberOfVoids) {
+		this.setNumberOfVoids(numberOfVoids);
+	}
+	
 	@Override
 	public Scene createScene() {
 
@@ -35,7 +39,8 @@ public class ObliqueObtuseIntersectionScenario extends Scenario {
 				
 				Void boid = new Void(new Vector(10, 225), new Vector());
 				boid.setName("SB-Void" + i + j);
-				boid.setGoal(goal1);
+				boid.setGoal(goal1, goal1);
+				boid.setCheckpoint(goal1, goal1);
 				
 				voids.add(boid);
 				boid.setOtherVoids(voids);
@@ -55,7 +60,8 @@ public class ObliqueObtuseIntersectionScenario extends Scenario {
 				
 				Void boid = new Void(new Vector(790, 225), new Vector());
 				boid.setName("WB-Void" + i + j);
-				boid.setGoal(goal2);
+				boid.setGoal(goal2, goal2);
+				boid.setCheckpoint(goal1, goal1);
 				
 				voids.add(boid);
 				boid.setOtherVoids(voids);

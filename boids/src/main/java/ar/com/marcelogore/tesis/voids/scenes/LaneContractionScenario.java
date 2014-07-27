@@ -21,10 +21,14 @@ public class LaneContractionScenario extends Scenario {
 
 	private static final Log log = LogFactory.getLog(LaneContractionScenario.class);
 	
+	public LaneContractionScenario(Integer numberOfVoids) {
+		this.setNumberOfVoids(numberOfVoids);
+	}
+	
 	@Override
 	public Scene createScene() {
 
-		List<Void> boids = new ArrayList<Void>();
+		List<Void> voids = new ArrayList<Void>();
 		
 		// Vuelen a la banda contraria
 		final Vector goal = new Vector(this.getSceneSize().x, 177.5);
@@ -35,10 +39,11 @@ public class LaneContractionScenario extends Scenario {
 				
 				Void boid = new Void(new Vector(10 * j, 110 + 30 * i), new Vector());
 				boid.setName("Void" + i + j);
-				boid.setGoal(goal);
+				boid.setGoal(goal, goal);
+				boid.setCheckpoint(goal, goal);
 				
-				boids.add(boid);
-				boid.setOtherVoids(boids);
+				voids.add(boid);
+				boid.setOtherVoids(voids);
 				
 				boid.setMaxX((int) getSceneSize().x);
 				boid.setMaxY((int) getSceneSize().y);
@@ -66,7 +71,7 @@ public class LaneContractionScenario extends Scenario {
 
 		representedVoids.addAll(obstacles);
 		for (CircularVoid cVoid : obstacles) {
-			boids.add(cVoid.getVoid());
+			voids.add(cVoid.getVoid());
 		}
 		
 		final Group group = new Group(representedVoids.toArray(new Circle[0]));
