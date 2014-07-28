@@ -464,7 +464,10 @@ public class Void {
 			Vector velocityShiftDueToRule2 = this.keepDistanceFromSurroundingObjects().multiply(2);
 			Vector velocityShiftDueToRule3 = this.matchOtherVoidsVelocity();
 			Vector velocityShiftDueToRule4 = this.moveTowardsGoal();
-			
+
+			// Use this line for goal-driven voids
+			// velocityShiftDueToRule4 = velocityShiftDueToRule4.multiply(MAX_VELOCITY);
+
 			Vector finalVelocity = this.limitVelocity(Vector.add(
 					this.getVelocity(),
 					velocityShiftDueToRule1, 
